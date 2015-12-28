@@ -1941,6 +1941,10 @@ case MEP_INSN_BSRV:
     OutMnem();
     out_one_operand(0);
     break;
+case MEP_INSN_CP:
+    OutMnem();
+    out_one_operand(0);
+    break;
 case MEP_INSN_SIM_SYSCALL:
     OutMnem();
     break;

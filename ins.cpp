@@ -206,6 +206,7 @@ instruc_t Instructions[] = {
   { "synccp",    0 }, //synccp
   { "jsrv",    CF_CALL|CF_USE1 }, //jsrv $rm
   { "bsrv",    CF_CALL|CF_USE1 }, //bsrv $pcrel24a2
+  { "cp",    CF_USE1 }, //cp $code24
   { "--syscall--",     }, //--syscall--
   { "--reserved--",    0 }, //--reserved--
   { "--reserved--",    0 }, //--reserved--

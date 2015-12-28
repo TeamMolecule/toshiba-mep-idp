@@ -2902,12 +2902,24 @@ mep_emu_jsrv (void)
 
 {
 {
+{
+ORSI (ADDSI (pc, 8), 1);
+{ USI val = ANDSI ([&valid](){ valid = 0; return 0; }(), (~ (1))); if (valid) ua_add_cref(0, val, InstrIsSet(cmd.itype, CF_CALL) ? fl_CN : fl_JN); }
+ORSI (ANDSI ([&valid](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((0) << (12)))));
+}
+{
+ORSI (ADDSI (pc, 4), 1);
+{ USI val = ANDSI ([&valid](){ valid = 0; return 0; }(), (~ (1))); if (valid) ua_add_cref(0, val, InstrIsSet(cmd.itype, CF_CALL) ? fl_CN : fl_JN); }
+ORSI (ANDSI ([&valid](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((0) << (12)))));
+}
+{
 ORSI (ADDSI (pc, 2), 1);
 {
 { USI val = ANDSI ([&valid](){ valid = 0; return 0; }(), (~ (3))); if (valid) ua_add_cref(0, val, InstrIsSet(cmd.itype, CF_CALL) ? fl_CN : fl_JN); }
 { USI val = ANDSI ([&valid](){ valid = 0; return 0; }(), (~ (7))); if (valid) ua_add_cref(0, val, InstrIsSet(cmd.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 ORSI (ANDSI ([&valid](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((1) << (12)))));
+}
 }
 }
 
@@ -2924,6 +2936,17 @@ mep_emu_bsrv (void)
 
 {
 {
+{
+ORSI (ADDSI (pc, 8), 1);
+{ USI val = ((cmd.Op1.type == o_imm ? cmd.Op1.value : cmd.Op1.addr) & ((~ (1)))); if (valid) ua_add_cref(0, val, InstrIsSet(cmd.itype, CF_CALL) ? fl_CN : fl_JN); }
+ORSI (ANDSI ([&valid](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((0) << (12)))));
+}
+{
+ORSI (ADDSI (pc, 4), 1);
+{ USI val = ((cmd.Op1.type == o_imm ? cmd.Op1.value : cmd.Op1.addr) & ((~ (1)))); if (valid) ua_add_cref(0, val, InstrIsSet(cmd.itype, CF_CALL) ? fl_CN : fl_JN); }
+ORSI (ANDSI ([&valid](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((0) << (12)))));
+}
+{
 ORSI (ADDSI (pc, 4), 1);
 {
 { USI val = ((cmd.Op1.type == o_imm ? cmd.Op1.value : cmd.Op1.addr) & ((~ (3)))); if (valid) ua_add_cref(0, val, InstrIsSet(cmd.itype, CF_CALL) ? fl_CN : fl_JN); }
@@ -2932,6 +2955,19 @@ ORSI (ADDSI (pc, 4), 1);
 ORSI (ANDSI ([&valid](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((1) << (12)))));
 }
 }
+}
+
+  return 4;
+}
+
+// ********** cp: cp $code24
+
+static int
+mep_emu_cp (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
 
   return 4;
 }
@@ -3420,6 +3456,7 @@ int idaapi emu(void)
     case MEP_INSN_SYNCCP: len = mep_emu_synccp(); break;
     case MEP_INSN_JSRV: len = mep_emu_jsrv(); break;
     case MEP_INSN_BSRV: len = mep_emu_bsrv(); break;
+    case MEP_INSN_CP: len = mep_emu_cp(); break;
     case MEP_INSN_SIM_SYSCALL: len = mep_emu_sim_syscall(); break;
     case MEP_INSN_RI_0: len = mep_emu_ri_0(); break;
     case MEP_INSN_RI_1: len = mep_emu_ri_1(); break;

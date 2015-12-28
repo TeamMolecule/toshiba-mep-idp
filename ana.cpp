@@ -244,7 +244,7 @@ int idaapi ana( void )
           case 1 :
             entire_insn = entire_insn >> 16;
             if ((entire_insn & 0xff0f) == 0x180f)
-              { itype = MEP_INSN_JSRV; goto extract_sfmt_jsrv; }
+              { itype = MEP_INSN_JSRV; goto extract_sfmt_jsr; }
             itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
           default : itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
           }
@@ -886,7 +886,7 @@ int idaapi ana( void )
           switch (val)
           {
           case 0 : itype = MEP_INSN_MOVU24; goto extract_sfmt_movu24;
-          case 1 : itype = MEP_INSN_BSRV; goto extract_sfmt_bsrv;
+          case 1 : itype = MEP_INSN_BSRV; goto extract_sfmt_bsr24;
           default : itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
           }
         }
@@ -1121,6 +1121,7 @@ int idaapi ana( void )
           default : itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
           }
         }
+      case 247 : itype = MEP_INSN_CP; goto extract_sfmt_cp;
       case 248 :
         entire_insn = entire_insn >> 16;
         itype = MEP_INSN_RI_26; goto extract_sfmt_break;
@@ -4133,39 +4134,22 @@ int idaapi ana( void )
     return 2;
   }
 
- extract_sfmt_jsrv:
+ extract_sfmt_cp:
   {
     CGEN_INSN_WORD insn = entire_insn;
-    UINT f_rm;
+    UINT f_24u4n_hi;
+    UINT f_24u4n_lo;
+    UINT f_24u4n;
 
-    f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
-
-    /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RM;
-
-    cmd.itype = itype;
-    cmd.size = 2;
-    return 2;
-  }
-
- extract_sfmt_bsrv:
-  {
-    CGEN_INSN_WORD insn = entire_insn;
-    UINT f_24s5a2n_lo;
-    INT f_24s5a2n_hi;
-    INT f_24s5a2n;
-
-    f_24s5a2n_lo = EXTRACT_MSB0_UINT (insn, 32, 5, 7);
-    f_24s5a2n_hi = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
-  f_24s5a2n = ((((((f_24s5a2n_hi) << (8))) | (((f_24s5a2n_lo) << (1))))) + (pc));
+    f_24u4n_hi = EXTRACT_MSB0_UINT (insn, 32, 4, 8);
+    f_24u4n_lo = EXTRACT_MSB0_UINT (insn, 32, 16, 16);
+  f_24u4n = ((((f_24u4n_hi) << (16))) | (f_24u4n_lo));
 
     /* Record the operands  */
-    cmd.Op1.type = o_near;
+    cmd.Op1.type = o_imm;
     cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.addr = f_24s5a2n;
-    cmd.Op1.cgen_optype = MEP_OPERAND_PCREL24A2;
+    cmd.Op1.value = f_24u4n;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CODE24;
 
     cmd.itype = itype;
     cmd.size = 4;
