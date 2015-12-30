@@ -5,7 +5,7 @@ This is a processor module for MeP mostly generated from
 
 ## Features
 
-* Analysis of the core instruction set
+* Analysis of the core instruction set + C5 additions
 * Basic data/code reference detection
 * Basic branch detection
 * Basic stack behavior detection
@@ -13,7 +13,9 @@ This is a processor module for MeP mostly generated from
 ## Not Supported
 
 * VLIW (including operation switching)
-* Co-processor instruction sets (should be easy to add)
+* Co-processor instruction sets (adding support as a different processor module 
+should be easy, but integrating it together and adding support for switching 
+instruction sets will be akin to ARM/Thumb support)
 
 ## Building
 
