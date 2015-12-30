@@ -125,7 +125,7 @@ instruc_t Instructions[] = {
   { "di",    0 }, //di
   { "ei",    0 }, //ei
   { "reti",    CF_STOP }, //reti
-  { "halt",    CF_STOP }, //halt
+  { "halt",    0 }, //halt
   { "sleep",    0 }, //sleep
   { "swi",    CF_USE1 }, //swi $uimm2
   { "break",    0 }, //break
