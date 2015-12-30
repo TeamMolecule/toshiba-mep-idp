@@ -171,7 +171,7 @@ static ea_t idaapi mep_translate(ea_t base, adiff_t offset)
 
 #define FAMILY "Toshiba MeP family:"
 static const char *const shnames[] = { "MeP", NULL };
-static const char *const lnames[]  = { FAMILY"Toshiba MeP media engine", NULL };
+static const char *const lnames[]  = { FAMILY"Toshiba MeP C5 media engine", NULL };
 
 //--------------------------------------------------------------------------
 
