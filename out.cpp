@@ -418,6 +418,237 @@ void idaapi out(void)
   init_output_buffer(buf, sizeof(buf));
   switch (cmd.itype)
   {
+case MEP_INSN_STCB_R:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_symbol('(');
+    out_one_operand(1);
+    out_symbol(')');
+    break;
+case MEP_INSN_LDCB_R:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_symbol('(');
+    out_one_operand(1);
+    out_symbol(')');
+    break;
+case MEP_INSN_PREF:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_symbol('(');
+    out_one_operand(1);
+    out_symbol(')');
+    break;
+case MEP_INSN_PREFD:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(1);
+    out_symbol('(');
+    out_one_operand(2);
+    out_symbol(')');
+    break;
+case MEP_INSN_CASB3:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(1);
+    out_symbol(',');
+    OutChar(' ');
+    out_symbol('(');
+    out_one_operand(2);
+    out_symbol(')');
+    break;
+case MEP_INSN_CASH3:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(1);
+    out_symbol(',');
+    OutChar(' ');
+    out_symbol('(');
+    out_one_operand(2);
+    out_symbol(')');
+    break;
+case MEP_INSN_CASW3:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(1);
+    out_symbol(',');
+    OutChar(' ');
+    out_symbol('(');
+    out_one_operand(2);
+    out_symbol(')');
+    break;
+case MEP_INSN_SBCP:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(1);
+    out_symbol('(');
+    out_one_operand(2);
+    out_symbol(')');
+    break;
+case MEP_INSN_LBCP:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(1);
+    out_symbol('(');
+    out_one_operand(2);
+    out_symbol(')');
+    break;
+case MEP_INSN_LBUCP:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(1);
+    out_symbol('(');
+    out_one_operand(2);
+    out_symbol(')');
+    break;
+case MEP_INSN_SHCP:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(1);
+    out_symbol('(');
+    out_one_operand(2);
+    out_symbol(')');
+    break;
+case MEP_INSN_LHCP:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(1);
+    out_symbol('(');
+    out_one_operand(2);
+    out_symbol(')');
+    break;
+case MEP_INSN_LHUCP:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(1);
+    out_symbol('(');
+    out_one_operand(2);
+    out_symbol(')');
+    break;
+case MEP_INSN_LBUCPA:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_symbol('(');
+    out_one_operand(1);
+    out_symbol('+');
+    out_symbol(')');
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(2);
+    break;
+case MEP_INSN_LHUCPA:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_symbol('(');
+    out_one_operand(1);
+    out_symbol('+');
+    out_symbol(')');
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(2);
+    break;
+case MEP_INSN_LBUCPM0:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_symbol('(');
+    out_one_operand(1);
+    out_symbol('+');
+    out_symbol(')');
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(2);
+    break;
+case MEP_INSN_LHUCPM0:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_symbol('(');
+    out_one_operand(1);
+    out_symbol('+');
+    out_symbol(')');
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(2);
+    break;
+case MEP_INSN_LBUCPM1:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_symbol('(');
+    out_one_operand(1);
+    out_symbol('+');
+    out_symbol(')');
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(2);
+    break;
+case MEP_INSN_LHUCPM1:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_symbol('(');
+    out_one_operand(1);
+    out_symbol('+');
+    out_symbol(')');
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(2);
+    break;
+case MEP_INSN_UCI:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(1);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(2);
+    break;
+case MEP_INSN_DSP:
+    OutMnem();
+    out_one_operand(0);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(1);
+    out_symbol(',');
+    OutChar(' ');
+    out_one_operand(2);
+    break;
 case MEP_INSN_SB:
     OutMnem();
     out_one_operand(0);

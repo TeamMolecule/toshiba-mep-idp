@@ -27,6 +27,29 @@ This file is part of the GNU Binutils and/or GDB, the GNU debugger.
 instruc_t Instructions[] = {
   { "", 0 }, // unknown
   { "--invalid--",    0 }, //--invalid--
+  { "stcb",    CF_USE1|CF_USE2 }, //stcb $rn,($rma)
+  { "ldcb",    CF_USE2|CF_CHG1 }, //ldcb $rn,($rma)
+  { "pref",    CF_USE1|CF_USE2 }, //pref $cimm4,($rma)
+  { "pref",    CF_USE1|CF_USE3|CF_USE2 }, //pref $cimm4,$sdisp16($rma)
+  { "casb3",    CF_USE2|CF_USE3|CF_USE1|CF_CHG1 }, //casb3 $rl5,$rn,($rm)
+  { "cash3",    CF_USE2|CF_USE3|CF_USE1|CF_CHG1 }, //cash3 $rl5,$rn,($rm)
+  { "casw3",    CF_USE2|CF_USE3|CF_USE1|CF_CHG1 }, //casw3 $rl5,$rn,($rm)
+  { "sbcp",    CF_USE1|CF_USE3|CF_USE2 }, //sbcp $crn,$cdisp12($rma)
+  { "lbcp",    CF_USE3|CF_USE2|CF_CHG1 }, //lbcp $crn,$cdisp12($rma)
+  { "lbucp",    CF_USE3|CF_USE2|CF_CHG1 }, //lbucp $crn,$cdisp12($rma)
+  { "shcp",    CF_USE1|CF_USE3|CF_USE2 }, //shcp $crn,$cdisp12($rma)
+  { "lhcp",    CF_USE3|CF_USE2|CF_CHG1 }, //lhcp $crn,$cdisp12($rma)
+  { "lhucp",    CF_USE3|CF_USE2|CF_CHG1 }, //lhucp $crn,$cdisp12($rma)
+  { "lbucpa",    CF_USE2|CF_USE3|CF_CHG1|CF_CHG2 }, //lbucpa $crn,($rma+),$cdisp10
+  { "lhucpa",    CF_USE2|CF_USE3|CF_CHG1|CF_CHG2 }, //lhucpa $crn,($rma+),$cdisp10a2
+  { "lbucpm0",    CF_USE2|CF_USE3|CF_CHG1|CF_CHG2 }, //lbucpm0 $crn,($rma+),$cdisp10
+  { "lhucpm0",    CF_USE2|CF_USE3|CF_CHG1|CF_CHG2 }, //lhucpm0 $crn,($rma+),$cdisp10a2
+  { "lbucpm1",    CF_USE2|CF_USE3|CF_CHG1|CF_CHG2 }, //lbucpm1 $crn,($rma+),$cdisp10
+  { "lhucpm1",    CF_USE2|CF_USE3|CF_CHG1|CF_CHG2 }, //lhucpm1 $crn,($rma+),$cdisp10a2
+  { "uci",    CF_USE1|CF_USE2|CF_CHG1 }, //uci $rn,$rm,$uimm16
+  { "dsp",    CF_USE1|CF_USE2|CF_USE3|CF_CHG1 }, //dsp $rn,$rm,$uimm16
+  { "dsp0",    CF_USE1 }, //dsp0 $c5rnmuimm24
+  { "dsp1",    CF_USE1|CF_USE2|CF_CHG1 }, //dsp1 $rn,$c5rmuimm20
   { "sb",    CF_USE1|CF_USE2 }, //sb $rnc,($rma)
   { "sh",    CF_USE1|CF_USE2 }, //sh $rns,($rma)
   { "sw",    CF_USE1|CF_USE2 }, //sw $rnl,($rma)

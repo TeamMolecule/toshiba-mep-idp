@@ -565,7 +565,10 @@ int idaapi ana( void )
         }
       case 116 :
         entire_insn = entire_insn >> 16;
-        itype = MEP_INSN_CACHE; goto extract_sfmt_cache;
+        itype = MEP_INSN_CACHE; goto extract_sfmt_pref;
+      case 117 :
+        entire_insn = entire_insn >> 16;
+        itype = MEP_INSN_PREF; goto extract_sfmt_pref;
       case 118 :
         entire_insn = entire_insn >> 16;
         if ((entire_insn & 0xffcf) == 0x7006)
@@ -644,6 +647,12 @@ int idaapi ana( void )
       case 123 :
         entire_insn = entire_insn >> 16;
         itype = MEP_INSN_LDC; goto extract_sfmt_ldc;
+      case 124 :
+        entire_insn = entire_insn >> 16;
+        itype = MEP_INSN_STCB_R; goto extract_sfmt_stcb_r;
+      case 125 :
+        entire_insn = entire_insn >> 16;
+        itype = MEP_INSN_LDCB_R; goto extract_sfmt_ldcb_r;
       case 126 :
         entire_insn = entire_insn >> 16;
         itype = MEP_INSN_RI_20; goto extract_sfmt_break;
@@ -923,6 +932,7 @@ int idaapi ana( void )
       case 237 :
         entire_insn = entire_insn >> 16;
         itype = MEP_INSN_RI_23; goto extract_sfmt_break;
+      case 240 : itype = MEP_INSN_DSP; goto extract_sfmt_dsp;
       case 241 :
         {
           unsigned int val = (((entire_insn >> 8) & (3 << 4)) | ((entire_insn >> 0) & (15 << 0)));
@@ -982,6 +992,18 @@ int idaapi ana( void )
             if ((entire_insn & 0xf0ffff07) == 0xf0011001)
               { itype = MEP_INSN_CLIPU; goto extract_sfmt_clip; }
             itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
+          case 32 :
+            if ((entire_insn & 0xf00ff0ff) == 0xf0012000)
+              { itype = MEP_INSN_CASB3; goto extract_sfmt_casb3; }
+            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
+          case 33 :
+            if ((entire_insn & 0xf00ff0ff) == 0xf0012001)
+              { itype = MEP_INSN_CASH3; goto extract_sfmt_casb3; }
+            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
+          case 34 :
+            if ((entire_insn & 0xf00ff0ff) == 0xf0012002)
+              { itype = MEP_INSN_CASW3; goto extract_sfmt_casb3; }
+            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
           case 52 :
             if ((entire_insn & 0xf00fffff) == 0xf0013004)
               { itype = MEP_INSN_MADD; goto extract_sfmt_madd; }
@@ -1001,6 +1023,8 @@ int idaapi ana( void )
           default : itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
           }
         }
+      case 242 : itype = MEP_INSN_UCI; goto extract_sfmt_uci;
+      case 243 : itype = MEP_INSN_PREFD; goto extract_sfmt_prefd;
       case 244 :
         {
           unsigned int val = (((insn >> 4) & (1 << 0)));
@@ -1019,104 +1043,70 @@ int idaapi ana( void )
         }
       case 245 :
         {
-          unsigned int val = (((entire_insn >> 10) & (31 << 0)));
+          unsigned int val = (((entire_insn >> 10) & (63 << 0)));
+          switch (val)
+          {
+          case 0 : itype = MEP_INSN_SBCPA; goto extract_sfmt_sbcpa;
+          case 2 : itype = MEP_INSN_SBCPM0; goto extract_sfmt_sbcpm0;
+          case 3 : itype = MEP_INSN_SBCPM1; goto extract_sfmt_sbcpm1;
+          case 4 : itype = MEP_INSN_SHCPA; goto extract_sfmt_shcpa;
+          case 6 : itype = MEP_INSN_SHCPM0; goto extract_sfmt_shcpm0;
+          case 7 : itype = MEP_INSN_SHCPM1; goto extract_sfmt_shcpm1;
+          case 8 : itype = MEP_INSN_SWCPA; goto extract_sfmt_swcpa;
+          case 10 : itype = MEP_INSN_SWCPM0; goto extract_sfmt_swcpm0;
+          case 11 : itype = MEP_INSN_SWCPM1; goto extract_sfmt_swcpm1;
+          case 12 : itype = MEP_INSN_SMCPA; goto extract_sfmt_smcpa;
+          case 14 : itype = MEP_INSN_SMCPM0; goto extract_sfmt_smcpm0;
+          case 15 : itype = MEP_INSN_SMCPM1; goto extract_sfmt_smcpm1;
+          case 16 : itype = MEP_INSN_LBCPA; goto extract_sfmt_lbucpa;
+          case 18 : itype = MEP_INSN_LBCPM0; goto extract_sfmt_lbucpm0;
+          case 19 : itype = MEP_INSN_LBCPM1; goto extract_sfmt_lbucpm1;
+          case 20 : itype = MEP_INSN_LHCPA; goto extract_sfmt_lhucpa;
+          case 22 : itype = MEP_INSN_LHCPM0; goto extract_sfmt_lhucpm0;
+          case 23 : itype = MEP_INSN_LHCPM1; goto extract_sfmt_lhucpm1;
+          case 24 : itype = MEP_INSN_LWCPA; goto extract_sfmt_lwcpa;
+          case 26 : itype = MEP_INSN_LWCPM0; goto extract_sfmt_lwcpm0;
+          case 27 : itype = MEP_INSN_LWCPM1; goto extract_sfmt_lwcpm1;
+          case 28 : itype = MEP_INSN_LMCPA; goto extract_sfmt_lmcpa;
+          case 30 : itype = MEP_INSN_LMCPM0; goto extract_sfmt_lmcpm0;
+          case 31 : itype = MEP_INSN_LMCPM1; goto extract_sfmt_lmcpm1;
+          case 48 : itype = MEP_INSN_LBUCPA; goto extract_sfmt_lbucpa;
+          case 50 : itype = MEP_INSN_LBUCPM0; goto extract_sfmt_lbucpm0;
+          case 51 : itype = MEP_INSN_LBUCPM1; goto extract_sfmt_lbucpm1;
+          case 52 : itype = MEP_INSN_LHUCPA; goto extract_sfmt_lhucpa;
+          case 54 : itype = MEP_INSN_LHUCPM0; goto extract_sfmt_lhucpm0;
+          case 55 : itype = MEP_INSN_LHUCPM1; goto extract_sfmt_lhucpm1;
+          default : itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
+          }
+        }
+      case 246 :
+        {
+          unsigned int val = (((entire_insn >> 13) & (3 << 1)) | ((entire_insn >> 12) & (1 << 0)));
           switch (val)
           {
           case 0 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0050000)
-              { itype = MEP_INSN_SBCPA; goto extract_sfmt_sbcpa; }
+            if ((entire_insn & 0xf00ff000) == 0xf0060000)
+              { itype = MEP_INSN_SBCP; goto extract_sfmt_sbcp; }
+            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
+          case 1 :
+            if ((entire_insn & 0xf00ff000) == 0xf0061000)
+              { itype = MEP_INSN_SHCP; goto extract_sfmt_shcp; }
             itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
           case 2 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0050800)
-              { itype = MEP_INSN_SBCPM0; goto extract_sfmt_sbcpm0; }
+            if ((entire_insn & 0xf00ff000) == 0xf0064000)
+              { itype = MEP_INSN_LBCP; goto extract_sfmt_lbcp; }
             itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
           case 3 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0050c00)
-              { itype = MEP_INSN_SBCPM1; goto extract_sfmt_sbcpm1; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 4 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0051000)
-              { itype = MEP_INSN_SHCPA; goto extract_sfmt_shcpa; }
+            if ((entire_insn & 0xf00ff000) == 0xf0065000)
+              { itype = MEP_INSN_LHCP; goto extract_sfmt_lhcp; }
             itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
           case 6 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0051800)
-              { itype = MEP_INSN_SHCPM0; goto extract_sfmt_shcpm0; }
+            if ((entire_insn & 0xf00ff000) == 0xf006c000)
+              { itype = MEP_INSN_LBUCP; goto extract_sfmt_lbcp; }
             itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
           case 7 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0051c00)
-              { itype = MEP_INSN_SHCPM1; goto extract_sfmt_shcpm1; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 8 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0052000)
-              { itype = MEP_INSN_SWCPA; goto extract_sfmt_swcpa; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 10 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0052800)
-              { itype = MEP_INSN_SWCPM0; goto extract_sfmt_swcpm0; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 11 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0052c00)
-              { itype = MEP_INSN_SWCPM1; goto extract_sfmt_swcpm1; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 12 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0053000)
-              { itype = MEP_INSN_SMCPA; goto extract_sfmt_smcpa; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 14 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0053800)
-              { itype = MEP_INSN_SMCPM0; goto extract_sfmt_smcpm0; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 15 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0053c00)
-              { itype = MEP_INSN_SMCPM1; goto extract_sfmt_smcpm1; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 16 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0054000)
-              { itype = MEP_INSN_LBCPA; goto extract_sfmt_lbcpa; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 18 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0054800)
-              { itype = MEP_INSN_LBCPM0; goto extract_sfmt_lbcpm0; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 19 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0054c00)
-              { itype = MEP_INSN_LBCPM1; goto extract_sfmt_lbcpm1; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 20 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0055000)
-              { itype = MEP_INSN_LHCPA; goto extract_sfmt_lhcpa; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 22 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0055800)
-              { itype = MEP_INSN_LHCPM0; goto extract_sfmt_lhcpm0; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 23 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0055c00)
-              { itype = MEP_INSN_LHCPM1; goto extract_sfmt_lhcpm1; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 24 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0056000)
-              { itype = MEP_INSN_LWCPA; goto extract_sfmt_lwcpa; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 26 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0056800)
-              { itype = MEP_INSN_LWCPM0; goto extract_sfmt_lwcpm0; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 27 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0056c00)
-              { itype = MEP_INSN_LWCPM1; goto extract_sfmt_lwcpm1; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 28 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0057000)
-              { itype = MEP_INSN_LMCPA; goto extract_sfmt_lmcpa; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 30 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0057800)
-              { itype = MEP_INSN_LMCPM0; goto extract_sfmt_lmcpm0; }
-            itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
-          case 31 :
-            if ((entire_insn & 0xf00ffc00) == 0xf0057c00)
-              { itype = MEP_INSN_LMCPM1; goto extract_sfmt_lmcpm1; }
+            if ((entire_insn & 0xf00ff000) == 0xf006d000)
+              { itype = MEP_INSN_LHUCP; goto extract_sfmt_lhcp; }
             itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
           default : itype = MEP_INSN_X_INVALID; goto extract_sfmt_empty;
           }
@@ -1145,6 +1135,465 @@ int idaapi ana( void )
     cmd.itype = itype;
     cmd.size = 0;
     return 0;
+  }
+
+ extract_sfmt_stcb_r:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_rn;
+    UINT f_rm;
+
+    f_rn = EXTRACT_MSB0_UINT (insn, 16, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
+
+    /* Record the operands  */
+    cmd.Op2.type = o_reg;
+    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+
+    cmd.itype = itype;
+    cmd.size = 2;
+    return 2;
+  }
+
+ extract_sfmt_ldcb_r:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_rn;
+    UINT f_rm;
+
+    f_rn = EXTRACT_MSB0_UINT (insn, 16, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
+
+    /* Record the operands  */
+    cmd.Op2.type = o_reg;
+    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+
+    cmd.itype = itype;
+    cmd.size = 2;
+    return 2;
+  }
+
+ extract_sfmt_pref:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_rn;
+    UINT f_rm;
+
+    f_rn = EXTRACT_MSB0_UINT (insn, 16, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
+
+    /* Record the operands  */
+    cmd.Op1.type = o_imm;
+    cmd.Op1.dtyp = get_dtyp_by_size(4);
+    cmd.Op1.value = f_rn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CIMM4;
+    cmd.Op2.type = o_reg;
+    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+
+    cmd.itype = itype;
+    cmd.size = 2;
+    return 2;
+  }
+
+ extract_sfmt_prefd:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_rn;
+    UINT f_rm;
+    INT f_16s16;
+
+    f_rn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
+
+    /* Record the operands  */
+    cmd.Op1.type = o_imm;
+    cmd.Op1.dtyp = get_dtyp_by_size(4);
+    cmd.Op1.value = f_rn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CIMM4;
+    cmd.Op3.type = o_reg;
+    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
+    cmd.Op2.type = o_imm;
+    cmd.Op2.dtyp = get_dtyp_by_size(4);
+    cmd.Op2.value = f_16s16;
+    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_casb3:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_rn;
+    UINT f_rm;
+    UINT f_rl5;
+
+    f_rn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_rl5 = EXTRACT_MSB0_UINT (insn, 32, 20, 4);
+
+    /* Record the operands  */
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rl5;
+    cmd.Op1.cgen_optype = MEP_OPERAND_RL5;
+    cmd.Op3.type = o_reg;
+    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op3.cgen_optype = MEP_OPERAND_RM;
+    cmd.Op2.type = o_reg;
+    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rn;
+    cmd.Op2.cgen_optype = MEP_OPERAND_RN;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_sbcp:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_crn;
+    UINT f_rm;
+    INT f_12s20;
+
+    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_12s20 = EXTRACT_MSB0_SINT (insn, 32, 20, 12);
+
+    /* Record the operands  */
+    cmd.Op2.type = o_imm;
+    cmd.Op2.dtyp = get_dtyp_by_size(4);
+    cmd.Op2.value = f_12s20;
+    cmd.Op2.cgen_optype = MEP_OPERAND_CDISP12;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    cmd.Op3.type = o_reg;
+    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_lbcp:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_crn;
+    UINT f_rm;
+    INT f_12s20;
+
+    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_12s20 = EXTRACT_MSB0_SINT (insn, 32, 20, 12);
+
+    /* Record the operands  */
+    cmd.Op2.type = o_imm;
+    cmd.Op2.dtyp = get_dtyp_by_size(4);
+    cmd.Op2.value = f_12s20;
+    cmd.Op2.cgen_optype = MEP_OPERAND_CDISP12;
+    cmd.Op3.type = o_reg;
+    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_shcp:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_crn;
+    UINT f_rm;
+    INT f_12s20;
+
+    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_12s20 = EXTRACT_MSB0_SINT (insn, 32, 20, 12);
+
+    /* Record the operands  */
+    cmd.Op2.type = o_imm;
+    cmd.Op2.dtyp = get_dtyp_by_size(4);
+    cmd.Op2.value = f_12s20;
+    cmd.Op2.cgen_optype = MEP_OPERAND_CDISP12;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    cmd.Op3.type = o_reg;
+    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_lhcp:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_crn;
+    UINT f_rm;
+    INT f_12s20;
+
+    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_12s20 = EXTRACT_MSB0_SINT (insn, 32, 20, 12);
+
+    /* Record the operands  */
+    cmd.Op2.type = o_imm;
+    cmd.Op2.dtyp = get_dtyp_by_size(4);
+    cmd.Op2.value = f_12s20;
+    cmd.Op2.cgen_optype = MEP_OPERAND_CDISP12;
+    cmd.Op3.type = o_reg;
+    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_lbucpa:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_crn;
+    UINT f_rm;
+    SI f_cdisp10;
+
+    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
+
+    /* Record the operands  */
+    cmd.Op3.type = o_imm;
+    cmd.Op3.dtyp = get_dtyp_by_size(4);
+    cmd.Op3.value = f_cdisp10;
+    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10;
+    cmd.Op2.type = o_reg;
+    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_lhucpa:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_crn;
+    UINT f_rm;
+    SI f_cdisp10;
+
+    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
+
+    /* Record the operands  */
+    cmd.Op3.type = o_imm;
+    cmd.Op3.dtyp = get_dtyp_by_size(4);
+    cmd.Op3.value = f_cdisp10;
+    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
+    cmd.Op2.type = o_reg;
+    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_lbucpm0:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_crn;
+    UINT f_rm;
+    SI f_cdisp10;
+
+    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
+
+    /* Record the operands  */
+    cmd.Op3.type = o_imm;
+    cmd.Op3.dtyp = get_dtyp_by_size(4);
+    cmd.Op3.value = f_cdisp10;
+    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10;
+    cmd.Op2.type = o_reg;
+    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_lhucpm0:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_crn;
+    UINT f_rm;
+    SI f_cdisp10;
+
+    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
+
+    /* Record the operands  */
+    cmd.Op3.type = o_imm;
+    cmd.Op3.dtyp = get_dtyp_by_size(4);
+    cmd.Op3.value = f_cdisp10;
+    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
+    cmd.Op2.type = o_reg;
+    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_lbucpm1:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_crn;
+    UINT f_rm;
+    SI f_cdisp10;
+
+    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
+
+    /* Record the operands  */
+    cmd.Op3.type = o_imm;
+    cmd.Op3.dtyp = get_dtyp_by_size(4);
+    cmd.Op3.value = f_cdisp10;
+    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10;
+    cmd.Op2.type = o_reg;
+    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_lhucpm1:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_crn;
+    UINT f_rm;
+    SI f_cdisp10;
+
+    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
+
+    /* Record the operands  */
+    cmd.Op3.type = o_imm;
+    cmd.Op3.dtyp = get_dtyp_by_size(4);
+    cmd.Op3.value = f_cdisp10;
+    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
+    cmd.Op2.type = o_reg;
+    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_uci:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_rn;
+    UINT f_rm;
+    UINT f_16u16;
+
+    f_rn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_16u16 = EXTRACT_MSB0_UINT (insn, 32, 16, 16);
+
+    /* Record the operands  */
+    cmd.Op2.type = o_reg;
+    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    cmd.Op3.type = o_imm;
+    cmd.Op3.dtyp = get_dtyp_by_size(4);
+    cmd.Op3.value = f_16u16;
+    cmd.Op3.cgen_optype = MEP_OPERAND_UIMM16;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
+  }
+
+ extract_sfmt_dsp:
+  {
+    CGEN_INSN_WORD insn = entire_insn;
+    UINT f_rn;
+    UINT f_rm;
+    UINT f_16u16;
+
+    f_rn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
+    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
+    f_16u16 = EXTRACT_MSB0_UINT (insn, 32, 16, 16);
+
+    /* Record the operands  */
+    cmd.Op2.type = o_reg;
+    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
+    cmd.Op1.type = o_reg;
+    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    cmd.Op3.type = o_imm;
+    cmd.Op3.dtyp = get_dtyp_by_size(4);
+    cmd.Op3.value = f_16u16;
+    cmd.Op3.cgen_optype = MEP_OPERAND_UIMM16;
+
+    cmd.itype = itype;
+    cmd.size = 4;
+    return 4;
   }
 
  extract_sfmt_sb:
@@ -2895,29 +3344,6 @@ int idaapi ana( void )
     return 2;
   }
 
- extract_sfmt_cache:
-  {
-    CGEN_INSN_WORD insn = entire_insn;
-    UINT f_rn;
-    UINT f_rm;
-
-    f_rn = EXTRACT_MSB0_UINT (insn, 16, 4, 4);
-    f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
-
-    /* Record the operands  */
-    cmd.Op1.type = o_imm;
-    cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.value = f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CIMM4;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-
-    cmd.itype = itype;
-    cmd.size = 2;
-    return 2;
-  }
-
  extract_sfmt_mul:
   {
     CGEN_INSN_WORD insn = entire_insn;
@@ -3455,34 +3881,6 @@ int idaapi ana( void )
     return 4;
   }
 
- extract_sfmt_lbcpa:
-  {
-    CGEN_INSN_WORD insn = entire_insn;
-    UINT f_crn;
-    UINT f_rm;
-    SI f_cdisp10;
-
-    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
-    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
-    f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
-
-    /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-
-    cmd.itype = itype;
-    cmd.size = 4;
-    return 4;
-  }
-
  extract_sfmt_shcpa:
   {
     CGEN_INSN_WORD insn = entire_insn;
@@ -3505,34 +3903,6 @@ int idaapi ana( void )
     cmd.Op2.type = o_reg;
     cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
     cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-
-    cmd.itype = itype;
-    cmd.size = 4;
-    return 4;
-  }
-
- extract_sfmt_lhcpa:
-  {
-    CGEN_INSN_WORD insn = entire_insn;
-    UINT f_crn;
-    UINT f_rm;
-    SI f_cdisp10;
-
-    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
-    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
-    f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
-
-    /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
 
     cmd.itype = itype;
     cmd.size = 4;
@@ -3679,34 +4049,6 @@ int idaapi ana( void )
     return 4;
   }
 
- extract_sfmt_lbcpm0:
-  {
-    CGEN_INSN_WORD insn = entire_insn;
-    UINT f_crn;
-    UINT f_rm;
-    SI f_cdisp10;
-
-    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
-    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
-    f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
-
-    /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-
-    cmd.itype = itype;
-    cmd.size = 4;
-    return 4;
-  }
-
  extract_sfmt_shcpm0:
   {
     CGEN_INSN_WORD insn = entire_insn;
@@ -3729,34 +4071,6 @@ int idaapi ana( void )
     cmd.Op2.type = o_reg;
     cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
     cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-
-    cmd.itype = itype;
-    cmd.size = 4;
-    return 4;
-  }
-
- extract_sfmt_lhcpm0:
-  {
-    CGEN_INSN_WORD insn = entire_insn;
-    UINT f_crn;
-    UINT f_rm;
-    SI f_cdisp10;
-
-    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
-    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
-    f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
-
-    /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
 
     cmd.itype = itype;
     cmd.size = 4;
@@ -3903,34 +4217,6 @@ int idaapi ana( void )
     return 4;
   }
 
- extract_sfmt_lbcpm1:
-  {
-    CGEN_INSN_WORD insn = entire_insn;
-    UINT f_crn;
-    UINT f_rm;
-    SI f_cdisp10;
-
-    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
-    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
-    f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
-
-    /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-
-    cmd.itype = itype;
-    cmd.size = 4;
-    return 4;
-  }
-
  extract_sfmt_shcpm1:
   {
     CGEN_INSN_WORD insn = entire_insn;
@@ -3953,34 +4239,6 @@ int idaapi ana( void )
     cmd.Op2.type = o_reg;
     cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
     cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-
-    cmd.itype = itype;
-    cmd.size = 4;
-    return 4;
-  }
-
- extract_sfmt_lhcpm1:
-  {
-    CGEN_INSN_WORD insn = entire_insn;
-    UINT f_crn;
-    UINT f_rm;
-    SI f_cdisp10;
-
-    f_crn = EXTRACT_MSB0_UINT (insn, 32, 4, 4);
-    f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
-    f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
-
-    /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
 
     cmd.itype = itype;
     cmd.size = 4;

@@ -29,6 +29,342 @@ mep_emu_x_invalid (void)
   return 0;
 }
 
+// ********** stcb_r: stcb $rn,($rma)
+
+static int
+mep_emu_stcb_r (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+
+  return 2;
+}
+
+// ********** ldcb_r: ldcb $rn,($rma)
+
+static int
+mep_emu_ldcb_r (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+[&valid](){ valid = 0; return 0; }();
+
+  return 2;
+}
+
+// ********** pref: pref $cimm4,($rma)
+
+static int
+mep_emu_pref (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+}
+
+  return 2;
+}
+
+// ********** prefd: pref $cimm4,$sdisp16($rma)
+
+static int
+mep_emu_prefd (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+}
+
+  return 4;
+}
+
+// ********** casb3: casb3 $rl5,$rn,($rm)
+
+static int
+mep_emu_casb3 (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+[&valid](){ valid = 0; return 0; }();
+}
+
+  return 4;
+}
+
+// ********** cash3: cash3 $rl5,$rn,($rm)
+
+static int
+mep_emu_cash3 (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+[&valid](){ valid = 0; return 0; }();
+}
+
+  return 4;
+}
+
+// ********** casw3: casw3 $rl5,$rn,($rm)
+
+static int
+mep_emu_casw3 (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+[&valid](){ valid = 0; return 0; }();
+}
+
+  return 4;
+}
+
+// ********** sbcp: sbcp $crn,$cdisp12($rma)
+
+static int
+mep_emu_sbcp (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+{ QI val = ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op2.type == o_imm ? cmd.Op2.value : cmd.Op2.addr)); if (valid) ua_add_dref(0, val, dr_W); }
+}
+
+  return 4;
+}
+
+// ********** lbcp: lbcp $crn,$cdisp12($rma)
+
+static int
+mep_emu_lbcp (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+EXTQISI ([&valid](){ QI val = ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op2.type == o_imm ? cmd.Op2.value : cmd.Op2.addr)); if (valid) ua_add_dref(0, val, dr_R); return 0; }()
+);
+}
+
+  return 4;
+}
+
+// ********** lbucp: lbucp $crn,$cdisp12($rma)
+
+static int
+mep_emu_lbucp (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+ZEXTQISI ([&valid](){ QI val = ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op2.type == o_imm ? cmd.Op2.value : cmd.Op2.addr)); if (valid) ua_add_dref(0, val, dr_R); return 0; }()
+);
+}
+
+  return 4;
+}
+
+// ********** shcp: shcp $crn,$cdisp12($rma)
+
+static int
+mep_emu_shcp (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+{ HI val = ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op2.type == o_imm ? cmd.Op2.value : cmd.Op2.addr)); if (valid) ua_add_dref(0, val, dr_W); }
+}
+
+  return 4;
+}
+
+// ********** lhcp: lhcp $crn,$cdisp12($rma)
+
+static int
+mep_emu_lhcp (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+EXTHISI ([&valid](){ HI val = ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op2.type == o_imm ? cmd.Op2.value : cmd.Op2.addr)); if (valid) ua_add_dref(0, val, dr_R); return 0; }()
+);
+}
+
+  return 4;
+}
+
+// ********** lhucp: lhucp $crn,$cdisp12($rma)
+
+static int
+mep_emu_lhucp (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+ZEXTHISI ([&valid](){ HI val = ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op2.type == o_imm ? cmd.Op2.value : cmd.Op2.addr)); if (valid) ua_add_dref(0, val, dr_R); return 0; }()
+);
+}
+
+  return 4;
+}
+
+// ********** lbucpa: lbucpa $crn,($rma+),$cdisp10
+
+static int
+mep_emu_lbucpa (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+ZEXTQISI ([&valid](){ QI val = [&valid](){ valid = 0; return 0; }(); if (valid) ua_add_dref(0, val, dr_R); return 0; }()
+);
+ADDSI ([&valid](){ valid = 0; return 0; }(), cmd.Op3.type == o_imm ? cmd.Op3.value : cmd.Op3.addr);
+}
+
+  return 4;
+}
+
+// ********** lhucpa: lhucpa $crn,($rma+),$cdisp10a2
+
+static int
+mep_emu_lhucpa (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+ZEXTHISI ([&valid](){ HI val = ANDSI ([&valid](){ valid = 0; return 0; }(), INVSI (1)); if (valid) ua_add_dref(0, val, dr_R); return 0; }()
+);
+ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op3.type == o_imm ? cmd.Op3.value : cmd.Op3.addr));
+}
+
+  return 4;
+}
+
+// ********** lbucpm0: lbucpm0 $crn,($rma+),$cdisp10
+
+static int
+mep_emu_lbucpm0 (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+ZEXTQISI ([&valid](){ QI val = [&valid](){ valid = 0; return 0; }(); if (valid) ua_add_dref(0, val, dr_R); return 0; }()
+);
+[&](){   SI tmp_modulo_mask;
+  tmp_modulo_mask = [&](){   SI tmp_temp;
+  tmp_temp = ORSI ([&valid](){ valid = 0; return 0; }(), [&valid](){ valid = 0; return 0; }());
+; return SRLSI (-1, [&valid](){ valid = 0; return 0; }()); }();
+; return [&](){ ORSI (ANDSI ([&valid](){ valid = 0; return 0; }(), INVSI (tmp_modulo_mask)), [&valid](){ valid = 0; return 0; }()); return ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op3.type == o_imm ? cmd.Op3.value : cmd.Op3.addr)); }(); }();
+}
+
+  return 4;
+}
+
+// ********** lhucpm0: lhucpm0 $crn,($rma+),$cdisp10a2
+
+static int
+mep_emu_lhucpm0 (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+ZEXTHISI ([&valid](){ HI val = ANDSI ([&valid](){ valid = 0; return 0; }(), INVSI (1)); if (valid) ua_add_dref(0, val, dr_R); return 0; }()
+);
+[&](){   SI tmp_modulo_mask;
+  tmp_modulo_mask = [&](){   SI tmp_temp;
+  tmp_temp = ORSI ([&valid](){ valid = 0; return 0; }(), [&valid](){ valid = 0; return 0; }());
+; return SRLSI (-1, [&valid](){ valid = 0; return 0; }()); }();
+; return [&](){ ORSI (ANDSI ([&valid](){ valid = 0; return 0; }(), INVSI (tmp_modulo_mask)), [&valid](){ valid = 0; return 0; }()); return ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op3.type == o_imm ? cmd.Op3.value : cmd.Op3.addr)); }(); }();
+}
+
+  return 4;
+}
+
+// ********** lbucpm1: lbucpm1 $crn,($rma+),$cdisp10
+
+static int
+mep_emu_lbucpm1 (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+ZEXTQISI ([&valid](){ QI val = [&valid](){ valid = 0; return 0; }(); if (valid) ua_add_dref(0, val, dr_R); return 0; }()
+);
+[&](){   SI tmp_modulo_mask;
+  tmp_modulo_mask = [&](){   SI tmp_temp;
+  tmp_temp = ORSI ([&valid](){ valid = 0; return 0; }(), [&valid](){ valid = 0; return 0; }());
+; return SRLSI (-1, [&valid](){ valid = 0; return 0; }()); }();
+; return [&](){ ORSI (ANDSI ([&valid](){ valid = 0; return 0; }(), INVSI (tmp_modulo_mask)), [&valid](){ valid = 0; return 0; }()); return ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op3.type == o_imm ? cmd.Op3.value : cmd.Op3.addr)); }(); }();
+}
+
+  return 4;
+}
+
+// ********** lhucpm1: lhucpm1 $crn,($rma+),$cdisp10a2
+
+static int
+mep_emu_lhucpm1 (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+{
+ZEXTHISI ([&valid](){ HI val = ANDSI ([&valid](){ valid = 0; return 0; }(), INVSI (1)); if (valid) ua_add_dref(0, val, dr_R); return 0; }()
+);
+[&](){   SI tmp_modulo_mask;
+  tmp_modulo_mask = [&](){   SI tmp_temp;
+  tmp_temp = ORSI ([&valid](){ valid = 0; return 0; }(), [&valid](){ valid = 0; return 0; }());
+; return SRLSI (-1, [&valid](){ valid = 0; return 0; }()); }();
+; return [&](){ ORSI (ANDSI ([&valid](){ valid = 0; return 0; }(), INVSI (tmp_modulo_mask)), [&valid](){ valid = 0; return 0; }()); return ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op3.type == o_imm ? cmd.Op3.value : cmd.Op3.addr)); }(); }();
+}
+
+  return 4;
+}
+
+// ********** uci: uci $rn,$rm,$uimm16
+
+static int
+mep_emu_uci (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+[&valid](){ valid = 0; return 0; }();
+
+  return 4;
+}
+
+// ********** dsp: dsp $rn,$rm,$uimm16
+
+static int
+mep_emu_dsp (void)
+{
+  ea_t pc = cmd.ea;
+  int valid = 1;
+
+[&valid](){ valid = 0; return 0; }();
+
+  return 4;
+}
+
 // ********** sb: sb $rnc,($rma)
 
 static int
@@ -3277,6 +3613,27 @@ int idaapi emu(void)
   int len;  switch (cmd.itype)
   {
     case MEP_INSN_X_INVALID: len = mep_emu_x_invalid(); break;
+    case MEP_INSN_STCB_R: len = mep_emu_stcb_r(); break;
+    case MEP_INSN_LDCB_R: len = mep_emu_ldcb_r(); break;
+    case MEP_INSN_PREF: len = mep_emu_pref(); break;
+    case MEP_INSN_PREFD: len = mep_emu_prefd(); break;
+    case MEP_INSN_CASB3: len = mep_emu_casb3(); break;
+    case MEP_INSN_CASH3: len = mep_emu_cash3(); break;
+    case MEP_INSN_CASW3: len = mep_emu_casw3(); break;
+    case MEP_INSN_SBCP: len = mep_emu_sbcp(); break;
+    case MEP_INSN_LBCP: len = mep_emu_lbcp(); break;
+    case MEP_INSN_LBUCP: len = mep_emu_lbucp(); break;
+    case MEP_INSN_SHCP: len = mep_emu_shcp(); break;
+    case MEP_INSN_LHCP: len = mep_emu_lhcp(); break;
+    case MEP_INSN_LHUCP: len = mep_emu_lhucp(); break;
+    case MEP_INSN_LBUCPA: len = mep_emu_lbucpa(); break;
+    case MEP_INSN_LHUCPA: len = mep_emu_lhucpa(); break;
+    case MEP_INSN_LBUCPM0: len = mep_emu_lbucpm0(); break;
+    case MEP_INSN_LHUCPM0: len = mep_emu_lhucpm0(); break;
+    case MEP_INSN_LBUCPM1: len = mep_emu_lbucpm1(); break;
+    case MEP_INSN_LHUCPM1: len = mep_emu_lhucpm1(); break;
+    case MEP_INSN_UCI: len = mep_emu_uci(); break;
+    case MEP_INSN_DSP: len = mep_emu_dsp(); break;
     case MEP_INSN_SB: len = mep_emu_sb(); break;
     case MEP_INSN_SH: len = mep_emu_sh(); break;
     case MEP_INSN_SW: len = mep_emu_sw(); break;
