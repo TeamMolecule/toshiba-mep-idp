@@ -903,7 +903,11 @@ mep_emu_movu24 (void)
   ea_t pc = cmd.ea;
   int valid = 1;
 
-ZEXTSISI (cmd.Op2.type == o_imm ? cmd.Op2.value : cmd.Op2.addr);
+  ea_t addr = ZEXTSISI (cmd.Op2.type == o_imm ? cmd.Op2.value : cmd.Op2.addr);
+
+  if (segtype(addr) != SEG_UNDF) {
+    ua_add_dref(0, addr, dr_O);
+  }
 
   return 4;
 }
