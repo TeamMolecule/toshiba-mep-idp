@@ -385,7 +385,10 @@ static bool cgen_outop(op_t &x, uint16 opindex, ea_t pc)
       OutValue(x, OOF_NUMBER|OOFW_IMM);
       break;
     case MEP_OPERAND_UIMM24 :
-      OutValue(x, OOF_NUMBER|OOFW_IMM);
+      if (!out_name_expr(x, x.value, x.value))
+      {
+        OutValue(x, OOF_NUMBER|OOFW_IMM);
+      }
       break;
     case MEP_OPERAND_UIMM3 :
       OutValue(x, OOF_NUMBER|OOFW_IMM);

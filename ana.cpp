@@ -2240,9 +2240,9 @@ int idaapi ana( void )
   f_24u8a4n = ((((f_24u8a4n_hi) << (8))) | (((f_24u8a4n_lo) << (2))));
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
+    cmd.Op2.type = o_mem;
     cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_24u8a4n;
+    cmd.Op2.addr = f_24u8a4n;
     cmd.Op2.cgen_optype = MEP_OPERAND_ADDR24A4;
     cmd.Op1.type = o_reg;
     cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
@@ -2267,9 +2267,9 @@ int idaapi ana( void )
   f_24u8a4n = ((((f_24u8a4n_hi) << (8))) | (((f_24u8a4n_lo) << (2))));
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
+    cmd.Op2.type = o_mem;
     cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_24u8a4n;
+    cmd.Op2.addr = f_24u8a4n;
     cmd.Op2.cgen_optype = MEP_OPERAND_ADDR24A4;
     cmd.Op1.type = o_reg;
     cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
