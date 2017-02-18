@@ -14,6 +14,16 @@ This file is part of the Red Hat simulators.
 
 extern void make_stack_var(op_t &x);
 
+static void add_sp(sval_t delta)
+{
+  func_t *pfn = get_func(cmd.ea);
+
+  if (may_trace_sp() && pfn)
+  {
+    add_auto_stkpnt2(pfn, cmd.ea+cmd.size, delta);
+  }
+}
+
 // ********** x-invalid: --invalid--
 
 static int
@@ -961,7 +971,7 @@ mep_emu_add (void)
 
 ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op2.type == o_imm ? cmd.Op2.value : cmd.Op2.addr));
   if (cmd.Op1.reg == REGS_HW_H_GPR_BASE + 15)
-    add_auto_stkpnt2(NULL, cmd.ea+cmd.size, (sval_t)cmd.Op2.value);
+    add_sp((sval_t)cmd.Op2.value);
 
   return 2;
 }
@@ -975,7 +985,7 @@ mep_emu_add3i (void)
   int valid = 1;
 
 ADDSI ([&valid](){ valid = 0; return 0; }(), ZEXTSISI (cmd.Op3.type == o_imm ? cmd.Op3.value : cmd.Op3.addr));
-  add_auto_stkpnt2(NULL, cmd.ea+cmd.size, (sval_t)cmd.Op3.value);
+  add_sp((sval_t)cmd.Op3.value);
 
   return 2;
 }
@@ -1138,7 +1148,7 @@ mep_emu_add3x (void)
 
 ADDSI ([&valid](){ valid = 0; return 0; }(), EXTSISI (cmd.Op3.type == o_imm ? cmd.Op3.value : cmd.Op3.addr));
   if (cmd.Op1.reg == REGS_HW_H_GPR_BASE + 15 && cmd.Op2.reg == REGS_HW_H_GPR_BASE + 15)
-    add_auto_stkpnt2(NULL, cmd.ea+cmd.size, (sval_t)cmd.Op3.value);
+    add_sp((sval_t)cmd.Op3.value);
 
   return 4;
 }
@@ -3846,6 +3856,8 @@ int idaapi emu(void)
   if (len && !InstrIsSet(cmd.itype, CF_STOP))
   {
     ua_add_cref(0, cmd.ea+len, fl_F);
+  } else if (may_trace_sp()) {
+    recalc_spd(cmd.ea);
   }
   return 1;
 }
