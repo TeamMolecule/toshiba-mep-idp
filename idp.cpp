@@ -1,13 +1,41 @@
 #include "mep.hpp"
 
-void out_print_address(op_t &x, ea_t /*pc*/)
+void out_print_address(op_t &x, ea_t pc, int n = 0)
 {
+  const char *prefix;
+
+  refinfo_t ri;
+  if (get_refinfo(pc, n, &ri))
+  {
+    switch (ri.type())
+    {
+      case REF_LOW8: prefix = "LO8"; break;
+      case REF_LOW16: prefix = "LO16"; break;
+      case REF_HIGH8: prefix = "HI8"; break;
+      case REF_HIGH16: prefix = "HI16"; break;
+      case REF_VHIGH: prefix = "VHI"; break;
+      case REF_VLOW: prefix = "VLO"; break;
+      default: prefix = NULL; break;
+    }
+  } else {
+    prefix = NULL;
+  }
+
+  if (prefix)
+  {
+    out_line(prefix, COLOR_MACRO);
+    out_line("(", COLOR_MACRO);
+  }
   if (!out_name_expr(x, x.addr))
   {
     out_tagon(COLOR_ERROR);
     OutValue(x, OOF_ADDR | OOF_NUMBER | OOFS_NOSIGN);
     out_tagoff(COLOR_ERROR);
     QueueSet(Q_noName, cmd.ea);
+  }
+  if (prefix)
+  {
+    out_line(")", COLOR_MACRO);
   }
 }
 

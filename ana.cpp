@@ -2383,6 +2383,13 @@ int idaapi ana( void )
     cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
     cmd.Op1.cgen_optype = MEP_OPERAND_RN;
 
+    refinfo_t ri;
+    if (get_refinfo(cmd.ea, 1, &ri))
+    {
+      cmd.Op2.type = o_mem;
+      cmd.Op2.addr = calc_reference_target(cmd.ea, ri, f_16s16);
+    }
+
     cmd.itype = itype;
     cmd.size = 4;
     return 4;
@@ -2410,6 +2417,13 @@ int idaapi ana( void )
     cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
     cmd.Op1.cgen_optype = MEP_OPERAND_RN3;
 
+    refinfo_t ri;
+    if (get_refinfo(cmd.ea, 1, &ri))
+    {
+      cmd.Op2.type = o_mem;
+      cmd.Op2.addr = calc_reference_target(cmd.ea, ri, f_24u8n);
+    }
+
     cmd.itype = itype;
     cmd.size = 4;
     return 4;
@@ -2432,6 +2446,13 @@ int idaapi ana( void )
     cmd.Op1.type = o_reg;
     cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
     cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+
+    refinfo_t ri;
+    if (get_refinfo(cmd.ea, 1, &ri))
+    {
+      cmd.Op2.type = o_mem;
+      cmd.Op2.addr = calc_reference_target(cmd.ea, ri, f_16u16);
+    }
 
     cmd.itype = itype;
     cmd.size = 4;
@@ -2623,6 +2644,13 @@ int idaapi ana( void )
     cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
     cmd.Op1.cgen_optype = MEP_OPERAND_RN;
 
+    refinfo_t ri;
+    if (get_refinfo(cmd.ea, 2, &ri))
+    {
+      cmd.Op3.type = o_mem;
+      cmd.Op3.addr = calc_reference_target(cmd.ea, ri, f_16s16);
+    }
+
     cmd.itype = itype;
     cmd.size = 4;
     return 4;
@@ -2706,6 +2734,13 @@ int idaapi ana( void )
     cmd.Op1.type = o_reg;
     cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
     cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+
+    refinfo_t ri;
+    if (get_refinfo(cmd.ea, 2, &ri))
+    {
+      cmd.Op3.type = o_mem;
+      cmd.Op3.addr = calc_reference_target(cmd.ea, ri, f_16u16);
+    }
 
     cmd.itype = itype;
     cmd.size = 4;
@@ -3270,6 +3305,13 @@ int idaapi ana( void )
     cmd.Op2.dtyp = get_dtyp_by_size(4);
     cmd.Op2.value = f_16u16;
     cmd.Op2.cgen_optype = MEP_OPERAND_UIMM16;
+
+    refinfo_t ri;
+    if (get_refinfo(cmd.ea, 1, &ri))
+    {
+      cmd.Op2.type = o_mem;
+      cmd.Op2.addr = calc_reference_target(cmd.ea, ri, f_16u16);
+    }
 
     cmd.itype = itype;
     cmd.size = 4;
