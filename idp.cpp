@@ -4,7 +4,9 @@ void out_print_address(op_t &x, ea_t /*pc*/)
 {
   if (!out_name_expr(x, x.addr))
   {
+    out_tagon(COLOR_ERROR);
     OutValue(x, OOF_ADDR | OOF_NUMBER | OOFS_NOSIGN);
+    out_tagoff(COLOR_ERROR);
     QueueSet(Q_noName, cmd.ea);
   }
 }
