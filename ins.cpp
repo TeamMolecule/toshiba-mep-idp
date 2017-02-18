@@ -120,7 +120,7 @@ instruc_t Instructions[] = {
   { "sll",    CF_USE1|CF_USE2|CF_CHG1 }, //sll $rn,$uimm5
   { "sll3",    CF_USE1|CF_USE2 }, //sll3 \$0,$rn,$uimm5
   { "fsft",    CF_USE1|CF_USE2|CF_CHG1 }, //fsft $rn,$rm
-  { "bra",    CF_USE1 }, //bra $pcrel12a2
+  { "bra",    CF_USE1|CF_STOP }, //bra $pcrel12a2
   { "beqz",    CF_USE1|CF_USE2 }, //beqz $rn,$pcrel8a2
   { "bnez",    CF_USE1|CF_USE2 }, //bnez $rn,$pcrel8a2
   { "beqi",    CF_USE1|CF_USE2|CF_USE3 }, //beqi $rn,$uimm4,$pcrel17a2
