@@ -197,6 +197,12 @@ static ea_t idaapi mep_translate(ea_t base, adiff_t offset)
   return base+offset;
 }
 
+//----------------------------------------------------------------------
+static int idaapi mep_get_frame_retsize(func_t *)
+{
+  return 0;     // MeP doesn't use stack for function return addresses
+}
+
 //--------------------------------------------------------------------------
 
 #define FAMILY "Toshiba MeP family:"
@@ -283,7 +289,7 @@ idaman processor_t ida_module_data LPH =
   NULL,                 // ea_t (*extract_address)(ea_t ea,const char *string,int x);
   NULL,                 // int (*is_sp_based)(op_t &x); -- always, so leave it NULL
   NULL,                 // int (*create_func_frame)(func_t *pfn);
-  NULL,                 // int (*get_frame_retsize(func_t *pfn)
+  mep_get_frame_retsize,// int (*get_frame_retsize(func_t *pfn)
   NULL,                 // void (*gen_stkvar_def)(char *buf,const member_t *mptr,int32 v);
   gen_spcdef,           // Generate text representation of an item in a special segment
   MEP_INSN_RET,         // Icode of return instruction. It is ok to give any of possible return instructions
