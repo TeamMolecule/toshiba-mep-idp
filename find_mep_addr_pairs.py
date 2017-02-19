@@ -37,7 +37,7 @@ def find_pairs():
                     idaapi.set_refinfo(other[1], 1, REF_HIGH16, target, 0, 0)
                 movh[reg1] = None
 
-            if insn.get_canon_feature() & idaapi.CF_STOP:
+            if insn.get_canon_feature() & (idaapi.CF_STOP | idaapi.CF_CALL):
                 movh = [None] * MAX_REGISTERS
         else:
             size = 2
