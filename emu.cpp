@@ -985,7 +985,8 @@ mep_emu_add3i (void)
   int valid = 1;
 
 ADDSI ([&valid](){ valid = 0; return 0; }(), ZEXTSISI (cmd.Op3.type == o_imm ? cmd.Op3.value : cmd.Op3.addr));
-  add_sp((sval_t)cmd.Op3.value);
+  if (cmd.Op1.reg == REGS_HW_H_GPR_BASE + 15)
+    add_sp((sval_t)cmd.Op3.value);
 
   return 2;
 }
