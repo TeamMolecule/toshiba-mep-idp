@@ -22,7 +22,7 @@ def find_pairs():
             elif movh[reg1] is not None:
                 other = movh[reg1]
                 if mnem == "add3" and reg1 == reg2:
-                    target = (other[0] << 16) | val2
+                    target = (other[0] << 16) + val2
                     print "Found a add3 pointer pair to ", hex(target), " at ", hex(insn.ea)
                     idc.add_dref(insn.ea, target, dr_O)
                     idc.add_dref(other[1], target, dr_O)
