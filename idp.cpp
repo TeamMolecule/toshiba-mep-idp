@@ -86,7 +86,7 @@ static int idaapi notify(processor_t::idp_notify msgid, ...) // Various messages
         (void)li; // unused variable
         if (machine_type == 0xF00D)
         {
-          *p_procname = "Toshiba MeP";
+          *p_procname = "MeP";
           code = 0xF00D;
         }
         else
