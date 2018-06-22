@@ -1,4 +1,4 @@
-# Toshiba MeP for IDA Pro 6.x
+# Toshiba MeP for IDA Pro 7.x
 
 This is a processor module for MeP mostly generated from 
 [CGEN](https://github.com/yifanlu/cgen).

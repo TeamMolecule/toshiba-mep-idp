@@ -1,6 +1,6 @@
 /* MEP IDP hardware defines
 
-THIS FILE IS MACHINE GENERATED WITH CGEN.
+THIS FILE IS (mostly) MACHINE GENERATED WITH CGEN.
 
 Copyright 1996-2010 Free Software Foundation, Inc.
 
@@ -31,14 +31,34 @@ This file is part of the GNU Binutils and/or GDB, the GNU debugger.
 #include <name.hpp>
 #include <auto.hpp>
 #include <bytes.hpp>
-#include <frame.hpp>
-#include <queue.hpp>
+#include <problems.hpp>
 #include <lines.hpp>
 #include <loader.hpp>
 #include <offset.hpp>
 #include <segment.hpp>
 #include <kernwin.hpp>
+#include <frame.hpp>
 #include "ins.hpp"
+
+// Current processor in the module
+// It must be exported
+idaman processor_t ida_module_data LPH;
+
+void idaapi out_insn(outctx_t &ctx);
+bool idaapi out_opnd(outctx_t &ctx, const op_t &x);
+
+// use this define if the default out_mnem() is good enough
+#define DECLARE_OUT_FUNCS_WITHOUT_OUTMNEM(CTXNAME)      \
+  void idaapi out_insn(outctx_t &ctx)                   \
+  {                                                     \
+    CTXNAME *p = (CTXNAME *)&ctx;                       \
+    p->out_insn();                                      \
+  }                                                     \
+  bool idaapi out_opnd(outctx_t &ctx, const op_t &x)    \
+  {                                                     \
+    CTXNAME *p = (CTXNAME *)&ctx;                       \
+    return p->out_operand(x);                           \
+  }
 
 /* needed for cgen.h */
 #define CGEN_ARCH mep
@@ -165,10 +185,7 @@ typedef enum cgen_operand_type {
 
 /* IDP exports */
 
-int  idaapi ana( void );
-int  idaapi emu( void );
-void idaapi out( void );
-bool idaapi outop( op_t &op );
-void idaapi mep_data(ea_t ea);
+int  idaapi mep_ana(insn_t *_insn);
+int  idaapi mep_emu(const insn_t &insn);
 
 #endif

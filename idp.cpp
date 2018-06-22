@@ -1,84 +1,60 @@
 #include "mep.hpp"
 
-void out_print_address(op_t &x, ea_t pc, int n = 0)
+//------------------------------------------------------------------------
+static bool idaapi can_have_type(const op_t &x)      // returns 1 - operand can have
 {
-  const char *prefix;
-
-  refinfo_t ri;
-  if (get_refinfo(pc, n, &ri))
+  switch ( x.type )
   {
-    switch (ri.type())
-    {
-      case REF_LOW8: prefix = "LO8"; break;
-      case REF_LOW16: prefix = "LO16"; break;
-      case REF_HIGH8: prefix = "HI8"; break;
-      case REF_HIGH16: prefix = "HI16"; break;
-      case REF_VHIGH: prefix = "VHI"; break;
-      case REF_VLOW: prefix = "VLO"; break;
-      default: prefix = NULL; break;
-    }
-  } else {
-    prefix = NULL;
+    case o_void:
+    case o_reg:
+    case o_near:
+      return 0;
+//    case o_phrase: can have type because of ASI or 0 struct offsets
   }
-
-  if (prefix)
-  {
-    out_line(prefix, COLOR_MACRO);
-    out_line("(", COLOR_MACRO);
-  }
-  if (!out_name_expr(x, x.addr))
-  {
-    out_tagon(COLOR_ERROR);
-    OutValue(x, OOF_ADDR | OOF_NUMBER | OOFS_NOSIGN);
-    out_tagoff(COLOR_ERROR);
-    QueueSet(Q_noName, cmd.ea);
-  }
-  if (prefix)
-  {
-    out_line(")", COLOR_MACRO);
-  }
-}
-
-void out_print_spreg(op_t &/*x*/, ea_t /*pc*/)
-{
-  out_register("$sp");
-}
-
-void out_print_tpreg(op_t &/*x*/, ea_t /*pc*/)
-{
-  out_register("$tp");
-}
-
-void make_stack_var(op_t &x)
-{
-  if (may_create_stkvars())
-  {
-    adiff_t sp_off = x.value;
-    if ( ua_stkvar2(x, sp_off, 0) )
-      op_stkvar(cmd.ea, x.n);
-  }
+  return 1;
 }
 
 //--------------------------------------------------------------------------
 
-static int idaapi notify(processor_t::idp_notify msgid, ...) // Various messages:
+static ssize_t idaapi notify(void *, int msgid, va_list va) // Various messages:
 {
-  va_list va;
-  va_start(va, msgid);
-
-// A well behaving processor module should call invoke_callbacks()
-// in his notify() function. If this function returns 0, then
-// the processor module should process the notification itself
-// Otherwise the code should be returned to the caller:
-
-  int code = invoke_callbacks(HT_IDP, msgid, va);
-  if ( code )
-    return code;
-  code = 1;
+  int code = 0;
 
   switch ( msgid )
   {
-    case processor_t::loader_elf_machine:
+    case processor_t::ev_ana_insn:
+      {
+        insn_t *out = va_arg(va, insn_t *);
+        return mep_ana(out);
+      }
+
+    case processor_t::ev_emu_insn:
+      {
+        const insn_t *insn = va_arg(va, const insn_t *);
+        return mep_emu(*insn) ? 1 : -1;
+      }
+
+    case processor_t::ev_out_insn:
+      {
+        outctx_t *ctx = va_arg(va, outctx_t *);
+        out_insn(*ctx);
+        return 1;
+      }
+
+    case processor_t::ev_out_operand:
+      {
+        outctx_t *ctx = va_arg(va, outctx_t *);
+        const op_t *op = va_arg(va, const op_t *);
+        return out_opnd(*ctx, *op) ? 1 : -1;
+      }
+
+    case processor_t::ev_can_have_type:
+      {
+        const op_t *op = va_arg(va, const op_t *);
+        return can_have_type(*op) ? 1 : -1;
+      }
+
+    case processor_t::ev_loader_elf_machine:
       {
         linput_t *li = va_arg(va, linput_t *);
         int machine_type = va_arg(va, int);
@@ -88,10 +64,6 @@ static int idaapi notify(processor_t::idp_notify msgid, ...) // Various messages
         {
           *p_procname = "MeP";
           code = 0xF00D;
-        }
-        else
-        {
-          code = 0;
         }
       }
       break;
@@ -105,34 +77,13 @@ static int idaapi notify(processor_t::idp_notify msgid, ...) // Various messages
 }
 
 //--------------------------------------------------------------------------
-static void idaapi header(void)
-{
-}
-
-//--------------------------------------------------------------------------
-static void idaapi segstart(ea_t /*ea*/)
-{
-}
-
-//--------------------------------------------------------------------------
-static void idaapi segend(ea_t /*ea*/)
-{
-}
-
-//--------------------------------------------------------------------------
-static void idaapi footer(void)
-{
-}
-
-//--------------------------------------------------------------------------
 
 static const asm_t mepasm =
 {
+  ASH_HEXF3 | ASO_OCTF1 | ASB_BINF3,
   0,
+  "MeP assembler",
   0,
-  "MEP assembler",
-  0,
-  NULL,
   NULL,
   ".org",
   ".end",
@@ -190,19 +141,6 @@ static const bytes_t retcodes[] =
   { 0, NULL }
 };
 
-//-----------------------------------------------------------------------
-// use simple translation
-static ea_t idaapi mep_translate(ea_t base, adiff_t offset)
-{
-  return base+offset;
-}
-
-//----------------------------------------------------------------------
-static int idaapi mep_get_frame_retsize(func_t *)
-{
-  return 0;     // MeP doesn't use stack for function return addresses
-}
-
 //--------------------------------------------------------------------------
 
 #define FAMILY "Toshiba MeP family:"
@@ -218,10 +156,11 @@ static const char *const lnames[]  = { FAMILY"Toshiba MeP C5 media engine", NULL
 #define PLFM_MEP 0xF00D
 #include "reg.cpp"
 
-idaman processor_t ida_module_data LPH =
+processor_t LPH =
 {
-  IDP_INTERFACE_VERSION,        // version
-  PLFM_MEP,                      // id
+  IDP_INTERFACE_VERSION,  // version
+  PLFM_MEP,               // id
+                          // flag
   PR_USE32
   |PRN_HEX
   |PR_WORD_INS
@@ -229,71 +168,36 @@ idaman processor_t ida_module_data LPH =
   |PR_SEGTRANS          // segment translation is supported (codeSeg)
   |PR_SGROTHER,         // the segment registers don't contain
                         // the segment selectors, something else
-  8,                            // 8 bits in a byte for code segments
-  8,                            // 8 bits in a byte for other segments
+                          // flag2
+  0,                    // the module has processor-specific configuration options
+  8,                      // 8 bits in a byte for code segments
+  8,                      // 8 bits in a byte for other segments
 
-  shnames,    // short processor names (null term)
-  lnames,     // long processor names (null term)
+  shnames,
+  lnames,
 
-  asms,       // array of enabled assemblers
+  asms,
 
-  notify,     // Various messages:
+  notify,
 
-  header,     // produce start of text file
-  footer,     // produce end of text file
+  RegNames,
+  qnumber(RegNames),    // number of registers
 
-  segstart,   // produce start of segment
-  segend,     // produce end of segment
-
-  NULL,
-
-  ana,
-  emu,
-
-  out,
-  outop,
-  mep_data,    //intel_data,
-  NULL,       // compare operands
-  NULL,       // can have type
-
-  qnumber(RegNames),    // Number of registers
-  RegNames,             // Register names
-  NULL,                 // get abstract register
-
-  0,                    // Number of register files
-  NULL,                 // Register file names
-  NULL,                 // Register descriptions
-  NULL,                 // Pointer to CPU registers
-
-  0,0,
-  4,                    // size of a segment register
-  0,0,
+  qnumber(RegNames)-2,qnumber(RegNames)-1, // first, last
+  0,                    // size of a segment register
+  qnumber(RegNames)-2,qnumber(RegNames)-1, // virtual CS,DS
 
   NULL,                 // No known code start sequences
-  retcodes,
+  retcodes,             // 'Return' instruction codes
 
   0, MEP_INSN_RI_26+1,
-  Instructions,
-  NULL,                 // int  (*is_far_jump)(int icode);
-  mep_translate,        // Translation function for offsets
+  Instructions,         // instruc
   0,                    // int tbyte_size;  -- doesn't exist
-  NULL,                 // int (*realcvt)(void *m, ushort *e, ushort swt);
   { 0, 0, 0, 0 },       // char real_width[4];
                         // number of symbols after decimal point
                         // 2byte float (0-does not exist)
                         // normal float
                         // normal double
                         // long double
-  NULL,                 // int (*is_switch)(switch_info_t *si);
-  NULL,                 // int32 (*gen_map_file)(FILE *fp);
-  NULL,                 // ea_t (*extract_address)(ea_t ea,const char *string,int x);
-  NULL,                 // int (*is_sp_based)(op_t &x); -- always, so leave it NULL
-  NULL,                 // int (*create_func_frame)(func_t *pfn);
-  mep_get_frame_retsize,// int (*get_frame_retsize(func_t *pfn)
-  NULL,                 // void (*gen_stkvar_def)(char *buf,const member_t *mptr,int32 v);
-  gen_spcdef,           // Generate text representation of an item in a special segment
   MEP_INSN_RET,         // Icode of return instruction. It is ok to give any of possible return instructions
-  NULL,                 // const char *(*set_idp_options)(const char *keyword,int value_type,const void *value);
-  NULL,                 // int (*is_align_insn)(ea_t ea);
-  NULL,                 // mvm_t *mvm;
 };

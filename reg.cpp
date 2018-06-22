@@ -1,6 +1,6 @@
 /* MEP IDP registers
 
-THIS FILE IS MACHINE GENERATED WITH CGEN.
+THIS FILE IS (mostly) MACHINE GENERATED WITH CGEN.
 
 Copyright 1996-2010 Free Software Foundation, Inc.
 
@@ -395,4 +395,6 @@ static const char *const RegNames[] =
   "$acc1_5", 
   "$acc1_6", 
   "$acc1_7", 
+  "cs", 
+  "ds"
 };

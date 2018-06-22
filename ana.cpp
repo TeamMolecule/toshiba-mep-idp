@@ -1,6 +1,6 @@
 /* MEP IDP analysis
 
-THIS FILE IS MACHINE GENERATED WITH CGEN.
+THIS FILE IS (mostly) MACHINE GENERATED WITH CGEN.
 
 Copyright 1996-2010 Free Software Foundation, Inc.
 
@@ -86,10 +86,21 @@ static inline CGEN_INSN_WORD get_insn_value(unsigned char *buf, int length)
   return value;
 }
 
+static inline ea_t calc_reference_target(ea_t from, const refinfo_t &ri, adiff_t opval)
+{
+  ea_t target;
+  ea_t base;
+  calc_reference_data(&target, &base, from, ri, opval);
+  (void)base;
+  return target;
+}
+
 /* Analyze the current instruction.  */
 
-int idaapi ana( void )
+int idaapi mep_ana(insn_t *_insn)
 {
+  insn_t &ida_insn = *_insn;
+
   /* temporary buffer */
   unsigned char buffer[4];
 
@@ -99,10 +110,10 @@ int idaapi ana( void )
   CGEN_INSN_WORD insn;
   CGEN_INSN_WORD entire_insn;
   ea_t pc;
-  get_data_value(cmd.ea, (uval_t *)buffer, 4);
+  get_data_value((uval_t *)buffer, ida_insn.ea, 4);
   insn = get_insn_value(buffer, 16);
   entire_insn = get_insn_value(buffer, 32);
-  pc = cmd.ea;
+  pc = ida_insn.ea;
   {
 
     {
@@ -1132,8 +1143,8 @@ int idaapi ana( void )
 
     /* Record the operands  */
 
-    cmd.itype = itype;
-    cmd.size = 0;
+    ida_insn.itype = itype;
+    ida_insn.size = 0;
     return 0;
   }
 
@@ -1147,15 +1158,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1169,15 +1180,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1191,16 +1202,16 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_imm;
-    cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.value = f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CIMM4;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_imm;
+    ida_insn.Op1.dtype = get_dtype_by_size(4);
+    ida_insn.Op1.value = f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CIMM4;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1216,20 +1227,20 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op1.type = o_imm;
-    cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.value = f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CIMM4;
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op1.type = o_imm;
+    ida_insn.Op1.dtype = get_dtype_by_size(4);
+    ida_insn.Op1.value = f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CIMM4;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1245,18 +1256,18 @@ int idaapi ana( void )
     f_rl5 = EXTRACT_MSB0_UINT (insn, 32, 20, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rl5;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RL5;
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rl5;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RL5;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1272,19 +1283,19 @@ int idaapi ana( void )
     f_12s20 = EXTRACT_MSB0_SINT (insn, 32, 20, 12);
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_12s20;
-    cmd.Op2.cgen_optype = MEP_OPERAND_CDISP12;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_12s20;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_CDISP12;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1300,19 +1311,19 @@ int idaapi ana( void )
     f_12s20 = EXTRACT_MSB0_SINT (insn, 32, 20, 12);
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_12s20;
-    cmd.Op2.cgen_optype = MEP_OPERAND_CDISP12;
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_12s20;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_CDISP12;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1328,19 +1339,19 @@ int idaapi ana( void )
     f_12s20 = EXTRACT_MSB0_SINT (insn, 32, 20, 12);
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_12s20;
-    cmd.Op2.cgen_optype = MEP_OPERAND_CDISP12;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_12s20;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_CDISP12;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1356,19 +1367,19 @@ int idaapi ana( void )
     f_12s20 = EXTRACT_MSB0_SINT (insn, 32, 20, 12);
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_12s20;
-    cmd.Op2.cgen_optype = MEP_OPERAND_CDISP12;
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_12s20;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_CDISP12;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1384,19 +1395,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1412,19 +1423,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1440,19 +1451,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1468,19 +1479,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1496,19 +1507,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1524,19 +1535,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1552,19 +1563,19 @@ int idaapi ana( void )
     f_16u16 = EXTRACT_MSB0_UINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_16u16;
-    cmd.Op3.cgen_optype = MEP_OPERAND_UIMM16;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_16u16;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_UIMM16;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1580,19 +1591,19 @@ int idaapi ana( void )
     f_16u16 = EXTRACT_MSB0_UINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_16u16;
-    cmd.Op3.cgen_optype = MEP_OPERAND_UIMM16;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_16u16;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_UIMM16;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -1606,15 +1617,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNC;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNC;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1628,15 +1639,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNS;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNS;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1650,15 +1661,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNL;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNL;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1672,15 +1683,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNC;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNC;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1694,15 +1705,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNS;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNS;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1716,15 +1727,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNL;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNL;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1738,15 +1749,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNUC;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNUC;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1760,15 +1771,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNUS;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNUS;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1782,16 +1793,16 @@ int idaapi ana( void )
     f_7u9a4 = ((EXTRACT_MSB0_UINT (insn, 16, 9, 5)) << (2));
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNL;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_7u9a4;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UDISP7A4;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNL;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_7u9a4;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UDISP7A4;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1805,16 +1816,16 @@ int idaapi ana( void )
     f_7u9a4 = ((EXTRACT_MSB0_UINT (insn, 16, 9, 5)) << (2));
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_7u9a4;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UDISP7A4;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNL;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_7u9a4;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UDISP7A4;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNL;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1828,16 +1839,16 @@ int idaapi ana( void )
     f_7u9 = EXTRACT_MSB0_UINT (insn, 16, 9, 7);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN3C;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_7u9;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UDISP7;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN3C;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_7u9;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UDISP7;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1851,16 +1862,16 @@ int idaapi ana( void )
     f_7u9a2 = ((EXTRACT_MSB0_UINT (insn, 16, 9, 6)) << (1));
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN3S;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_7u9a2;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UDISP7A2;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN3S;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_7u9a2;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UDISP7A2;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1874,16 +1885,16 @@ int idaapi ana( void )
     f_7u9a4 = ((EXTRACT_MSB0_UINT (insn, 16, 9, 5)) << (2));
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN3L;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_7u9a4;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UDISP7A4;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN3L;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_7u9a4;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UDISP7A4;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1897,16 +1908,16 @@ int idaapi ana( void )
     f_7u9 = EXTRACT_MSB0_UINT (insn, 16, 9, 7);
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_7u9;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UDISP7;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN3C;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_7u9;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UDISP7;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN3C;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1920,16 +1931,16 @@ int idaapi ana( void )
     f_7u9a2 = ((EXTRACT_MSB0_UINT (insn, 16, 9, 6)) << (1));
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_7u9a2;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UDISP7A2;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN3S;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_7u9a2;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UDISP7A2;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN3S;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1943,16 +1954,16 @@ int idaapi ana( void )
     f_7u9a4 = ((EXTRACT_MSB0_UINT (insn, 16, 9, 5)) << (2));
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_7u9a4;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UDISP7A4;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN3L;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_7u9a4;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UDISP7A4;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN3L;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1966,16 +1977,16 @@ int idaapi ana( void )
     f_7u9 = EXTRACT_MSB0_UINT (insn, 16, 9, 7);
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_7u9;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UDISP7;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN3UC;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_7u9;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UDISP7;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN3UC;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -1989,16 +2000,16 @@ int idaapi ana( void )
     f_7u9a2 = ((EXTRACT_MSB0_UINT (insn, 16, 9, 6)) << (1));
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_7u9a2;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UDISP7A2;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN3US;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_7u9a2;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UDISP7A2;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN3US;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2014,19 +2025,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNC;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNC;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2042,19 +2053,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNS;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNS;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2070,19 +2081,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNL;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNL;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2098,19 +2109,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNC;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNC;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2126,19 +2137,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNS;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNS;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2154,19 +2165,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNL;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNL;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2182,19 +2193,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNUC;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNUC;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2210,19 +2221,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNUS;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNUS;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2240,16 +2251,16 @@ int idaapi ana( void )
   f_24u8a4n = ((((f_24u8a4n_hi) << (8))) | (((f_24u8a4n_lo) << (2))));
 
     /* Record the operands  */
-    cmd.Op2.type = o_mem;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.addr = f_24u8a4n;
-    cmd.Op2.cgen_optype = MEP_OPERAND_ADDR24A4;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNL;
+    ida_insn.Op2.type = o_mem;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.addr = f_24u8a4n;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_ADDR24A4;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNL;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2267,16 +2278,16 @@ int idaapi ana( void )
   f_24u8a4n = ((((f_24u8a4n_hi) << (8))) | (((f_24u8a4n_lo) << (2))));
 
     /* Record the operands  */
-    cmd.Op2.type = o_mem;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.addr = f_24u8a4n;
-    cmd.Op2.cgen_optype = MEP_OPERAND_ADDR24A4;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RNL;
+    ida_insn.Op2.type = o_mem;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.addr = f_24u8a4n;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_ADDR24A4;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RNL;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2288,12 +2299,12 @@ int idaapi ana( void )
     f_rn = EXTRACT_MSB0_UINT (insn, 16, 4, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2307,16 +2318,16 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_imm;
-    cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.value = f_2u6;
-    cmd.Op1.cgen_optype = MEP_OPERAND_UDISP2;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_imm;
+    ida_insn.Op1.dtype = get_dtype_by_size(4);
+    ida_insn.Op1.value = f_2u6;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_UDISP2;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2330,15 +2341,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2352,16 +2363,16 @@ int idaapi ana( void )
     f_8s8 = EXTRACT_MSB0_SINT (insn, 16, 8, 8);
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_8s8;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SIMM8;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_8s8;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SIMM8;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2375,23 +2386,23 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SIMM16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SIMM16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
     refinfo_t ri;
-    if (get_refinfo(cmd.ea, 1, &ri))
+    if (get_refinfo(&ri, ida_insn.ea, 1))
     {
-      cmd.Op2.type = o_mem;
-      cmd.Op2.addr = calc_reference_target(cmd.ea, ri, f_16s16);
+      ida_insn.Op2.type = o_mem;
+      ida_insn.Op2.addr = calc_reference_target(ida_insn.ea, ri, f_16s16);
     }
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2409,23 +2420,23 @@ int idaapi ana( void )
   f_24u8n = ((((f_24u8n_hi) << (8))) | (f_24u8n_lo));
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_24u8n;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UIMM24;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN3;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_24u8n;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UIMM24;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn3;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN3;
 
     refinfo_t ri;
-    if (get_refinfo(cmd.ea, 1, &ri))
+    if (get_refinfo(&ri, ida_insn.ea, 1))
     {
-      cmd.Op2.type = o_mem;
-      cmd.Op2.addr = calc_reference_target(cmd.ea, ri, f_24u8n);
+      ida_insn.Op2.type = o_mem;
+      ida_insn.Op2.addr = calc_reference_target(ida_insn.ea, ri, f_24u8n);
     }
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2439,23 +2450,23 @@ int idaapi ana( void )
     f_16u16 = EXTRACT_MSB0_UINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16u16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UIMM16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16u16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UIMM16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
     refinfo_t ri;
-    if (get_refinfo(cmd.ea, 1, &ri))
+    if (get_refinfo(&ri, ida_insn.ea, 1))
     {
-      cmd.Op2.type = o_mem;
-      cmd.Op2.addr = calc_reference_target(cmd.ea, ri, f_16u16);
+      ida_insn.Op2.type = o_mem;
+      ida_insn.Op2.addr = calc_reference_target(ida_insn.ea, ri, f_16u16);
     }
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2471,18 +2482,18 @@ int idaapi ana( void )
     f_rl = EXTRACT_MSB0_UINT (insn, 16, 12, 4);
 
     /* Record the operands  */
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RN;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rl;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RL;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rl;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RL;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2496,16 +2507,16 @@ int idaapi ana( void )
     f_6s8 = EXTRACT_MSB0_SINT (insn, 16, 8, 6);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_6s8;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SIMM6;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_6s8;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SIMM6;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2519,16 +2530,16 @@ int idaapi ana( void )
     f_7u9a4 = ((EXTRACT_MSB0_UINT (insn, 16, 9, 5)) << (2));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_7u9a4;
-    cmd.Op3.cgen_optype = MEP_OPERAND_UIMM7A4;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_7u9a4;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_UIMM7A4;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2542,15 +2553,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2564,15 +2575,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2586,16 +2597,16 @@ int idaapi ana( void )
     f_5u8 = EXTRACT_MSB0_UINT (insn, 16, 8, 5);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_5u8;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UIMM5;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_5u8;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UIMM5;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2609,15 +2620,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2633,26 +2644,26 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_16s16;
-    cmd.Op3.cgen_optype = MEP_OPERAND_SIMM16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_16s16;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_SIMM16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
     refinfo_t ri;
-    if (get_refinfo(cmd.ea, 2, &ri))
+    if (get_refinfo(&ri, ida_insn.ea, 2))
     {
-      cmd.Op3.type = o_mem;
-      cmd.Op3.addr = calc_reference_target(cmd.ea, ri, f_16s16);
+      ida_insn.Op3.type = o_mem;
+      ida_insn.Op3.addr = calc_reference_target(ida_insn.ea, ri, f_16s16);
     }
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2668,19 +2679,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_16s16;
-    cmd.Op3.cgen_optype = MEP_OPERAND_SIMM16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_16s16;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_SIMM16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2696,19 +2707,19 @@ int idaapi ana( void )
     f_16u16 = EXTRACT_MSB0_UINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_16u16;
-    cmd.Op3.cgen_optype = MEP_OPERAND_UIMM16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_16u16;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_UIMM16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2724,26 +2735,26 @@ int idaapi ana( void )
     f_16u16 = EXTRACT_MSB0_UINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_16u16;
-    cmd.Op3.cgen_optype = MEP_OPERAND_UIMM16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_16u16;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_UIMM16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
     refinfo_t ri;
-    if (get_refinfo(cmd.ea, 2, &ri))
+    if (get_refinfo(&ri, ida_insn.ea, 2))
     {
-      cmd.Op3.type = o_mem;
-      cmd.Op3.addr = calc_reference_target(cmd.ea, ri, f_16u16);
+      ida_insn.Op3.type = o_mem;
+      ida_insn.Op3.addr = calc_reference_target(ida_insn.ea, ri, f_16u16);
     }
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2757,16 +2768,16 @@ int idaapi ana( void )
     f_5u8 = EXTRACT_MSB0_UINT (insn, 16, 8, 5);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_5u8;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UIMM5;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_5u8;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UIMM5;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2780,16 +2791,16 @@ int idaapi ana( void )
     f_5u8 = EXTRACT_MSB0_UINT (insn, 16, 8, 5);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_5u8;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UIMM5;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_5u8;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UIMM5;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2803,15 +2814,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2823,13 +2834,13 @@ int idaapi ana( void )
     f_12s4a2 = ((((EXTRACT_MSB0_SINT (insn, 16, 4, 11)) << (1))) + (pc));
 
     /* Record the operands  */
-    cmd.Op1.type = o_near;
-    cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.addr = f_12s4a2;
-    cmd.Op1.cgen_optype = MEP_OPERAND_PCREL12A2;
+    ida_insn.Op1.type = o_near;
+    ida_insn.Op1.dtype = get_dtype_by_size(4);
+    ida_insn.Op1.addr = f_12s4a2;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_PCREL12A2;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2843,16 +2854,16 @@ int idaapi ana( void )
     f_8s8a2 = ((((EXTRACT_MSB0_SINT (insn, 16, 8, 7)) << (1))) + (pc));
 
     /* Record the operands  */
-    cmd.Op2.type = o_near;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.addr = f_8s8a2;
-    cmd.Op2.cgen_optype = MEP_OPERAND_PCREL8A2;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_near;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.addr = f_8s8a2;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_PCREL8A2;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2868,20 +2879,20 @@ int idaapi ana( void )
     f_17s16a2 = ((((EXTRACT_MSB0_SINT (insn, 32, 16, 16)) << (1))) + (pc));
 
     /* Record the operands  */
-    cmd.Op3.type = o_near;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.addr = f_17s16a2;
-    cmd.Op3.cgen_optype = MEP_OPERAND_PCREL17A2;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_4u8;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UIMM4;
+    ida_insn.Op3.type = o_near;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.addr = f_17s16a2;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_PCREL17A2;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_4u8;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UIMM4;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2897,19 +2908,19 @@ int idaapi ana( void )
     f_17s16a2 = ((((EXTRACT_MSB0_SINT (insn, 32, 16, 16)) << (1))) + (pc));
 
     /* Record the operands  */
-    cmd.Op3.type = o_near;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.addr = f_17s16a2;
-    cmd.Op3.cgen_optype = MEP_OPERAND_PCREL17A2;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op3.type = o_near;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.addr = f_17s16a2;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_PCREL17A2;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2921,13 +2932,13 @@ int idaapi ana( void )
     f_12s4a2 = ((((EXTRACT_MSB0_SINT (insn, 16, 4, 11)) << (1))) + (pc));
 
     /* Record the operands  */
-    cmd.Op1.type = o_near;
-    cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.addr = f_12s4a2;
-    cmd.Op1.cgen_optype = MEP_OPERAND_PCREL12A2;
+    ida_insn.Op1.type = o_near;
+    ida_insn.Op1.dtype = get_dtype_by_size(4);
+    ida_insn.Op1.addr = f_12s4a2;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_PCREL12A2;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2943,13 +2954,13 @@ int idaapi ana( void )
   f_24s5a2n = ((((((f_24s5a2n_hi) << (8))) | (((f_24s5a2n_lo) << (1))))) + (pc));
 
     /* Record the operands  */
-    cmd.Op1.type = o_near;
-    cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.addr = f_24s5a2n;
-    cmd.Op1.cgen_optype = MEP_OPERAND_PCREL24A2;
+    ida_insn.Op1.type = o_near;
+    ida_insn.Op1.dtype = get_dtype_by_size(4);
+    ida_insn.Op1.addr = f_24s5a2n;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_PCREL24A2;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -2961,12 +2972,12 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RM;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -2982,13 +2993,13 @@ int idaapi ana( void )
   f_24u5a2n = ((((f_24u5a2n_hi) << (8))) | (((f_24u5a2n_lo) << (1))));
 
     /* Record the operands  */
-    cmd.Op1.type = o_mem;
-    cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.addr = f_24u5a2n;
-    cmd.Op1.cgen_optype = MEP_OPERAND_PCABS24A2;
+    ida_insn.Op1.type = o_mem;
+    ida_insn.Op1.dtype = get_dtype_by_size(4);
+    ida_insn.Op1.addr = f_24u5a2n;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_PCABS24A2;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3000,12 +3011,12 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RM;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3015,8 +3026,8 @@ int idaapi ana( void )
 
     /* Record the operands  */
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3030,16 +3041,16 @@ int idaapi ana( void )
     f_17s16a2 = ((((EXTRACT_MSB0_SINT (insn, 32, 16, 16)) << (1))) + (pc));
 
     /* Record the operands  */
-    cmd.Op2.type = o_near;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.addr = f_17s16a2;
-    cmd.Op2.cgen_optype = MEP_OPERAND_PCREL17A2;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_near;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.addr = f_17s16a2;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_PCREL17A2;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3051,13 +3062,13 @@ int idaapi ana( void )
     f_17s16a2 = ((((EXTRACT_MSB0_SINT (insn, 32, 16, 16)) << (1))) + (pc));
 
     /* Record the operands  */
-    cmd.Op1.type = o_near;
-    cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.addr = f_17s16a2;
-    cmd.Op1.cgen_optype = MEP_OPERAND_PCREL17A2;
+    ida_insn.Op1.type = o_near;
+    ida_insn.Op1.dtype = get_dtype_by_size(4);
+    ida_insn.Op1.addr = f_17s16a2;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_PCREL17A2;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3069,12 +3080,12 @@ int idaapi ana( void )
     f_rn = EXTRACT_MSB0_UINT (insn, 16, 4, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3086,12 +3097,12 @@ int idaapi ana( void )
     f_rn = EXTRACT_MSB0_UINT (insn, 16, 4, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3103,12 +3114,12 @@ int idaapi ana( void )
     f_rn = EXTRACT_MSB0_UINT (insn, 16, 4, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3126,15 +3137,15 @@ int idaapi ana( void )
   f_csrn = ((((f_csrn_hi) << (4))) | (f_csrn_lo));
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_CSR_BASE + f_csrn;
-    cmd.Op2.cgen_optype = MEP_OPERAND_CSRN;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_CSR_BASE + f_csrn;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_CSRN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3146,12 +3157,12 @@ int idaapi ana( void )
     f_rn = EXTRACT_MSB0_UINT (insn, 16, 4, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3163,12 +3174,12 @@ int idaapi ana( void )
     f_rn = EXTRACT_MSB0_UINT (insn, 16, 4, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3180,12 +3191,12 @@ int idaapi ana( void )
     f_rn = EXTRACT_MSB0_UINT (insn, 16, 4, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3203,15 +3214,15 @@ int idaapi ana( void )
   f_csrn = ((((f_csrn_hi) << (4))) | (f_csrn_lo));
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_CSR_BASE + f_csrn;
-    cmd.Op2.cgen_optype = MEP_OPERAND_CSRN;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_CSR_BASE + f_csrn;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_CSRN;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3221,8 +3232,8 @@ int idaapi ana( void )
 
     /* Record the operands  */
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3232,8 +3243,8 @@ int idaapi ana( void )
 
     /* Record the operands  */
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3243,8 +3254,8 @@ int idaapi ana( void )
 
     /* Record the operands  */
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3254,8 +3265,8 @@ int idaapi ana( void )
 
     /* Record the operands  */
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3267,13 +3278,13 @@ int idaapi ana( void )
     f_2u10 = EXTRACT_MSB0_UINT (insn, 16, 10, 2);
 
     /* Record the operands  */
-    cmd.Op1.type = o_imm;
-    cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.value = f_2u10;
-    cmd.Op1.cgen_optype = MEP_OPERAND_UIMM2;
+    ida_insn.Op1.type = o_imm;
+    ida_insn.Op1.dtype = get_dtype_by_size(4);
+    ida_insn.Op1.value = f_2u10;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_UIMM2;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3283,8 +3294,8 @@ int idaapi ana( void )
 
     /* Record the operands  */
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3298,23 +3309,23 @@ int idaapi ana( void )
     f_16u16 = EXTRACT_MSB0_UINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16u16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UIMM16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16u16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UIMM16;
 
     refinfo_t ri;
-    if (get_refinfo(cmd.ea, 1, &ri))
+    if (get_refinfo(&ri, ida_insn.ea, 1))
     {
-      cmd.Op2.type = o_mem;
-      cmd.Op2.addr = calc_reference_target(cmd.ea, ri, f_16u16);
+      ida_insn.Op2.type = o_mem;
+      ida_insn.Op2.addr = calc_reference_target(ida_insn.ea, ri, f_16u16);
     }
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3328,16 +3339,16 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_3u5;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UIMM3;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_3u5;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UIMM3;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3351,16 +3362,16 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_3u5;
-    cmd.Op2.cgen_optype = MEP_OPERAND_UIMM3;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_3u5;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_UIMM3;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3374,15 +3385,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3396,15 +3407,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3418,15 +3429,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3440,15 +3451,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3462,15 +3473,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3484,15 +3495,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3502,8 +3513,8 @@ int idaapi ana( void )
 
     /* Record the operands  */
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3513,8 +3524,8 @@ int idaapi ana( void )
 
     /* Record the operands  */
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3528,15 +3539,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3550,15 +3561,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3572,15 +3583,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 32, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RM;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RM;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3594,16 +3605,16 @@ int idaapi ana( void )
     f_5u24 = EXTRACT_MSB0_UINT (insn, 32, 24, 5);
 
     /* Record the operands  */
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_5u24;
-    cmd.Op2.cgen_optype = MEP_OPERAND_CIMM5;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_RN;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_5u24;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_CIMM5;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_GPR_BASE + f_rn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_RN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3617,15 +3628,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3639,15 +3650,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3661,15 +3672,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN64;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN64;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3683,15 +3694,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN64;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN64;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3705,15 +3716,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3727,15 +3738,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3749,15 +3760,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN64;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN64;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3771,15 +3782,15 @@ int idaapi ana( void )
     f_rm = EXTRACT_MSB0_UINT (insn, 16, 8, 4);
 
     /* Record the operands  */
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN64;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN64;
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -3795,19 +3806,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3823,19 +3834,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3851,19 +3862,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN64;
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN64;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3879,19 +3890,19 @@ int idaapi ana( void )
     f_16s16 = EXTRACT_MSB0_SINT (insn, 32, 16, 16);
 
     /* Record the operands  */
-    cmd.Op3.type = o_reg;
-    cmd.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op3.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op2.type = o_imm;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.value = f_16s16;
-    cmd.Op2.cgen_optype = MEP_OPERAND_SDISP16;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN64;
+    ida_insn.Op3.type = o_reg;
+    ida_insn.Op3.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op2.type = o_imm;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.value = f_16s16;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_SDISP16;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN64;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3907,19 +3918,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3935,19 +3946,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3963,19 +3974,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A4;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A4;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -3991,19 +4002,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A4;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A4;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4019,19 +4030,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A8;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN64;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A8;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN64;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4047,19 +4058,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A8;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN64;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A8;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN64;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4075,19 +4086,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4103,19 +4114,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4131,19 +4142,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A4;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A4;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4159,19 +4170,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A4;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A4;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4187,19 +4198,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A8;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN64;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A8;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN64;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4215,19 +4226,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A8;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN64;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A8;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN64;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4243,19 +4254,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4271,19 +4282,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A2;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4299,19 +4310,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A4;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A4;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4327,19 +4338,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A4;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A4;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4355,19 +4366,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A8;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN64;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A8;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN64;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4383,19 +4394,19 @@ int idaapi ana( void )
     f_cdisp10 = (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (512))) ? (((((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023))) - (1024))) : (((((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) & (512))) ? ((((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10))) - (1024))) : ((((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) & (128))) ? (((EXTRACT_MSB0_SINT (insn, 32, 22, 10)) ^ (768))) : (EXTRACT_MSB0_SINT (insn, 32, 22, 10)))) & (1023)));
 
     /* Record the operands  */
-    cmd.Op3.type = o_imm;
-    cmd.Op3.dtyp = get_dtyp_by_size(4);
-    cmd.Op3.value = f_cdisp10;
-    cmd.Op3.cgen_optype = MEP_OPERAND_CDISP10A8;
-    cmd.Op2.type = o_reg;
-    cmd.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
-    cmd.Op2.cgen_optype = MEP_OPERAND_RMA;
-    cmd.Op1.type = o_reg;
-    cmd.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CRN64;
+    ida_insn.Op3.type = o_imm;
+    ida_insn.Op3.dtype = get_dtype_by_size(4);
+    ida_insn.Op3.value = f_cdisp10;
+    ida_insn.Op3.cgen_optype = MEP_OPERAND_CDISP10A8;
+    ida_insn.Op2.type = o_reg;
+    ida_insn.Op2.reg = REGS_HW_H_GPR_BASE + f_rm;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_RMA;
+    ida_insn.Op1.type = o_reg;
+    ida_insn.Op1.reg = REGS_HW_H_CR64_BASE + f_crn;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CRN64;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4409,17 +4420,17 @@ int idaapi ana( void )
     f_17s16a2 = ((((EXTRACT_MSB0_SINT (insn, 32, 16, 16)) << (1))) + (pc));
 
     /* Record the operands  */
-    cmd.Op1.type = o_imm;
-    cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.value = f_rm;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CCCC;
-    cmd.Op2.type = o_near;
-    cmd.Op2.dtyp = get_dtyp_by_size(4);
-    cmd.Op2.addr = f_17s16a2;
-    cmd.Op2.cgen_optype = MEP_OPERAND_PCREL17A2;
+    ida_insn.Op1.type = o_imm;
+    ida_insn.Op1.dtype = get_dtype_by_size(4);
+    ida_insn.Op1.value = f_rm;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CCCC;
+    ida_insn.Op2.type = o_near;
+    ida_insn.Op2.dtype = get_dtype_by_size(4);
+    ida_insn.Op2.addr = f_17s16a2;
+    ida_insn.Op2.cgen_optype = MEP_OPERAND_PCREL17A2;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4429,8 +4440,8 @@ int idaapi ana( void )
 
     /* Record the operands  */
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
@@ -4446,13 +4457,13 @@ int idaapi ana( void )
   f_24u4n = ((((f_24u4n_hi) << (16))) | (f_24u4n_lo));
 
     /* Record the operands  */
-    cmd.Op1.type = o_imm;
-    cmd.Op1.dtyp = get_dtyp_by_size(4);
-    cmd.Op1.value = f_24u4n;
-    cmd.Op1.cgen_optype = MEP_OPERAND_CODE24;
+    ida_insn.Op1.type = o_imm;
+    ida_insn.Op1.dtype = get_dtype_by_size(4);
+    ida_insn.Op1.value = f_24u4n;
+    ida_insn.Op1.cgen_optype = MEP_OPERAND_CODE24;
 
-    cmd.itype = itype;
-    cmd.size = 4;
+    ida_insn.itype = itype;
+    ida_insn.size = 4;
     return 4;
   }
 
@@ -4473,8 +4484,8 @@ int idaapi ana( void )
 
     /* Record the operands  */
 
-    cmd.itype = itype;
-    cmd.size = 2;
+    ida_insn.itype = itype;
+    ida_insn.size = 2;
     return 2;
   }
 
