@@ -154,7 +154,7 @@ mep_emu_sbcp (const insn_t &insn)
   int valid = 1;
 
 {
-{ QI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ QI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 4;
@@ -169,7 +169,7 @@ mep_emu_lbcp (const insn_t &insn)
   int valid = 1;
 
 {
-EXTQISI ([&](){ QI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTQISI ([&](){ QI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 }
 
@@ -185,7 +185,7 @@ mep_emu_lbucp (const insn_t &insn)
   int valid = 1;
 
 {
-ZEXTQISI ([&](){ QI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTQISI ([&](){ QI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 }
 
@@ -201,7 +201,7 @@ mep_emu_shcp (const insn_t &insn)
   int valid = 1;
 
 {
-{ HI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ HI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 4;
@@ -216,7 +216,7 @@ mep_emu_lhcp (const insn_t &insn)
   int valid = 1;
 
 {
-EXTHISI ([&](){ HI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTHISI ([&](){ HI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 }
 
@@ -232,7 +232,7 @@ mep_emu_lhucp (const insn_t &insn)
   int valid = 1;
 
 {
-ZEXTHISI ([&](){ HI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTHISI ([&](){ HI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 }
 
@@ -248,7 +248,7 @@ mep_emu_lbucpa (const insn_t &insn)
   int valid = 1;
 
 {
-ZEXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 ADDSI ([&](){ valid = 0; return 0; }(), insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr);
 }
@@ -265,7 +265,7 @@ mep_emu_lhucpa (const insn_t &insn)
   int valid = 1;
 
 {
-ZEXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr));
 }
@@ -282,7 +282,7 @@ mep_emu_lbucpm0 (const insn_t &insn)
   int valid = 1;
 
 {
-ZEXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
@@ -303,7 +303,7 @@ mep_emu_lhucpm0 (const insn_t &insn)
   int valid = 1;
 
 {
-ZEXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
@@ -324,7 +324,7 @@ mep_emu_lbucpm1 (const insn_t &insn)
   int valid = 1;
 
 {
-ZEXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
@@ -345,7 +345,7 @@ mep_emu_lhucpm1 (const insn_t &insn)
   int valid = 1;
 
 {
-ZEXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
@@ -392,7 +392,7 @@ mep_emu_sb (const insn_t &insn)
   int valid = 1;
 
 {
-{ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 2;
@@ -407,7 +407,7 @@ mep_emu_sh (const insn_t &insn)
   int valid = 1;
 
 {
-{ UHI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ UHI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 2;
@@ -422,7 +422,7 @@ mep_emu_sw (const insn_t &insn)
   int valid = 1;
 
 {
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 2;
@@ -436,7 +436,7 @@ mep_emu_lb (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-EXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 
   return 2;
@@ -450,7 +450,7 @@ mep_emu_lh (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-EXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 
   return 2;
@@ -464,7 +464,7 @@ mep_emu_lw (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-[&](){ SI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+[&](){ SI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 ;
 
   return 2;
@@ -478,7 +478,7 @@ mep_emu_lbu (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-ZEXTQISI ([&](){ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTQISI ([&](){ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 
   return 2;
@@ -492,7 +492,7 @@ mep_emu_lhu (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-ZEXTHISI ([&](){ UHI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTHISI ([&](){ UHI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 
   return 2;
@@ -507,7 +507,7 @@ mep_emu_sw_sp (const insn_t &insn)
   int valid = 1;
 
 {
-{ SI val = ((((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) + ([&](){ valid = 0; return 0; }()))) & ((~ (3)))); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ SI val = ((((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) + ([&](){ valid = 0; return 0; }()))) & ((~ (3)))); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   make_stack_var(insn, insn.Op2);
@@ -523,7 +523,7 @@ mep_emu_lw_sp (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-[&](){ SI val = ((((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) + ([&](){ valid = 0; return 0; }()))) & ((~ (3)))); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+[&](){ SI val = ((((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) + ([&](){ valid = 0; return 0; }()))) & ((~ (3)))); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 ;
   make_stack_var(insn, insn.Op2);
 
@@ -539,7 +539,7 @@ mep_emu_sb_tp (const insn_t &insn)
   int valid = 1;
 
 {
-{ QI val = ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ QI val = ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 2;
@@ -554,7 +554,7 @@ mep_emu_sh_tp (const insn_t &insn)
   int valid = 1;
 
 {
-{ HI val = ANDSI (ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()), (~ (1))); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ HI val = ANDSI (ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()), (~ (1))); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 2;
@@ -569,7 +569,7 @@ mep_emu_sw_tp (const insn_t &insn)
   int valid = 1;
 
 {
-{ SI val = ANDSI (ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()), (~ (3))); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ SI val = ANDSI (ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()), (~ (3))); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 2;
@@ -583,7 +583,7 @@ mep_emu_lb_tp (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-EXTQISI ([&](){ QI val = ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTQISI ([&](){ QI val = ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 
   return 2;
@@ -597,7 +597,7 @@ mep_emu_lh_tp (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-EXTHISI ([&](){ HI val = ANDSI (ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()), (~ (1))); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTHISI ([&](){ HI val = ANDSI (ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()), (~ (1))); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 
   return 2;
@@ -611,7 +611,7 @@ mep_emu_lw_tp (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-[&](){ SI val = ANDSI (ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()), (~ (3))); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+[&](){ SI val = ANDSI (ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()), (~ (3))); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 ;
 
   return 2;
@@ -625,7 +625,7 @@ mep_emu_lbu_tp (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-ZEXTQISI ([&](){ QI val = ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTQISI ([&](){ QI val = ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 
   return 2;
@@ -639,7 +639,7 @@ mep_emu_lhu_tp (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-ZEXTHISI ([&](){ HI val = ANDSI (ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()), (~ (1))); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTHISI ([&](){ HI val = ANDSI (ADDSI (ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), [&](){ valid = 0; return 0; }()), (~ (1))); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 
   return 2;
@@ -654,7 +654,7 @@ mep_emu_sb16 (const insn_t &insn)
   int valid = 1;
 
 {
-{ QI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ QI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   if (insn.Op3.reg == REGS_HW_H_GPR_BASE + 15)
@@ -672,7 +672,7 @@ mep_emu_sh16 (const insn_t &insn)
   int valid = 1;
 
 {
-{ HI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)), (~ (1))); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ HI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)), (~ (1))); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
   if (insn.Op3.reg == REGS_HW_H_GPR_BASE + 15)
     make_stack_var(insn, insn.Op2);
@@ -689,7 +689,7 @@ mep_emu_sw16 (const insn_t &insn)
   int valid = 1;
 
 {
-{ SI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)), (~ (3))); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ SI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)), (~ (3))); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
   if (insn.Op3.reg == REGS_HW_H_GPR_BASE + 15)
     make_stack_var(insn, insn.Op2);
@@ -705,7 +705,7 @@ mep_emu_lb16 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-EXTQISI ([&](){ QI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTQISI ([&](){ QI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
   if (insn.Op3.reg == REGS_HW_H_GPR_BASE + 15)
     make_stack_var(insn, insn.Op2);
@@ -721,7 +721,7 @@ mep_emu_lh16 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-EXTHISI ([&](){ HI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)), (~ (1))); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTHISI ([&](){ HI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)), (~ (1))); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
   if (insn.Op3.reg == REGS_HW_H_GPR_BASE + 15)
     make_stack_var(insn, insn.Op2);
@@ -737,7 +737,7 @@ mep_emu_lw16 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-[&](){ SI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)), (~ (3))); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+[&](){ SI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)), (~ (3))); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 ;
   if (insn.Op3.reg == REGS_HW_H_GPR_BASE + 15)
     make_stack_var(insn, insn.Op2);
@@ -753,7 +753,7 @@ mep_emu_lbu16 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-ZEXTQISI ([&](){ QI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTQISI ([&](){ QI val = ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
   if (insn.Op3.reg == REGS_HW_H_GPR_BASE + 15)
     make_stack_var(insn, insn.Op2);
@@ -769,7 +769,7 @@ mep_emu_lhu16 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-ZEXTHISI ([&](){ HI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)), (~ (1))); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTHISI ([&](){ HI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr)), (~ (1))); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
   if (insn.Op3.reg == REGS_HW_H_GPR_BASE + 15)
     make_stack_var(insn, insn.Op2);
@@ -786,7 +786,7 @@ mep_emu_sw24 (const insn_t &insn)
   int valid = 1;
 
 {
-{ SI val = ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ SI val = ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 4;
@@ -800,7 +800,7 @@ mep_emu_lw24 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-[&](){ SI val = ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+[&](){ SI val = ZEXTSISI (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 ;
 
   return 4;
@@ -1403,7 +1403,7 @@ mep_emu_bra (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -1417,7 +1417,7 @@ mep_emu_beqz (const insn_t &insn)
   int valid = 1;
 
 {
-{ USI val = ((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 2;
@@ -1432,7 +1432,7 @@ mep_emu_bnez (const insn_t &insn)
   int valid = 1;
 
 {
-{ USI val = ((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 2;
@@ -1447,7 +1447,7 @@ mep_emu_beqi (const insn_t &insn)
   int valid = 1;
 
 {
-{ USI val = ((insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 4;
@@ -1462,7 +1462,7 @@ mep_emu_bnei (const insn_t &insn)
   int valid = 1;
 
 {
-{ USI val = ((insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 4;
@@ -1477,7 +1477,7 @@ mep_emu_blti (const insn_t &insn)
   int valid = 1;
 
 {
-{ USI val = ((insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 4;
@@ -1492,7 +1492,7 @@ mep_emu_bgei (const insn_t &insn)
   int valid = 1;
 
 {
-{ USI val = ((insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 4;
@@ -1507,7 +1507,7 @@ mep_emu_beq (const insn_t &insn)
   int valid = 1;
 
 {
-{ USI val = ((insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 4;
@@ -1522,7 +1522,7 @@ mep_emu_bne (const insn_t &insn)
   int valid = 1;
 
 {
-{ USI val = ((insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 4;
@@ -1538,7 +1538,7 @@ mep_emu_bsr12 (const insn_t &insn)
 
 {
 ADDSI (pc, 2);
-{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 2;
@@ -1554,7 +1554,7 @@ mep_emu_bsr24 (const insn_t &insn)
 
 {
 ADDSI (pc, 4);
-{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 4;
@@ -1574,20 +1574,20 @@ mep_emu_jmp (const insn_t &insn)
 {
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((1) << (12)))));
 {
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 }
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 {
 {
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((0) << (12)))));
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 {
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 }
 }
@@ -1605,7 +1605,7 @@ mep_emu_jmp24 (const insn_t &insn)
   int valid = 1;
 
 {
-{ USI val = ANDSI (ORSI (ANDSI (pc, 0xf0000000), insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr), (~ (1))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI (ORSI (ANDSI (pc, 0xf0000000), insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr), (~ (1))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 4;
@@ -1621,7 +1621,7 @@ mep_emu_jsr (const insn_t &insn)
 
 {
 ADDSI (pc, 2);
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 2;
@@ -1641,20 +1641,20 @@ mep_emu_ret (const insn_t &insn)
 {
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((1) << (12)))));
 {
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 }
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 {
 {
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((0) << (12)))));
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 {
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 }
 }
@@ -1845,13 +1845,13 @@ mep_emu_reti (const insn_t &insn)
 {
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((1) << (12)))));
 {
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (9))))), ((((1) << (9))) & (((0) << (9)))));
 }
 {
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (9))))), ((((1) << (9))) & (((0) << (9)))));
 }
 }
@@ -1859,14 +1859,14 @@ ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (9))))), ((((1) << (9)
 {
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((1) << (12)))));
 {
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (2))))), ((((1) << (2))) & (SLLSI (ANDSI (SRLSI ([&](){ valid = 0; return 0; }(), 3), 1), 2))));
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (0))))), ((((1) << (0))) & (SLLSI (ANDSI (SRLSI ([&](){ valid = 0; return 0; }(), 1), 1), 0))));
 }
 {
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (2))))), ((((1) << (2))) & (SLLSI (ANDSI (SRLSI ([&](){ valid = 0; return 0; }(), 3), 1), 2))));
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (0))))), ((((1) << (0))) & (SLLSI (ANDSI (SRLSI ([&](){ valid = 0; return 0; }(), 1), 1), 0))));
 }
@@ -1929,7 +1929,7 @@ mep_emu_break (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -1981,7 +1981,7 @@ mep_emu_bsetm (const insn_t &insn)
   int valid = 1;
 
 {
-{ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 2;
@@ -1996,7 +1996,7 @@ mep_emu_bclrm (const insn_t &insn)
   int valid = 1;
 
 {
-{ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 2;
@@ -2011,7 +2011,7 @@ mep_emu_bnotm (const insn_t &insn)
   int valid = 1;
 
 {
-{ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 2;
@@ -2026,7 +2026,7 @@ mep_emu_btstm (const insn_t &insn)
   int valid = 1;
 
 {
-ZEXTQISI (ANDQI ([&](){ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+ZEXTQISI (ANDQI ([&](){ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 , ((1) << (insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr))));
 }
 
@@ -2043,9 +2043,9 @@ mep_emu_tas (const insn_t &insn)
 
 {
   SI tmp_result;
-  tmp_result = ZEXTQISI ([&](){ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+  tmp_result = ZEXTQISI ([&](){ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
-{ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ UQI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 tmp_result;
 }
 
@@ -2226,7 +2226,7 @@ mep_emu_div (const insn_t &insn)
 
 {
 {
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 {
 {
 0x80000000;
@@ -2253,7 +2253,7 @@ mep_emu_divu (const insn_t &insn)
 
 {
 {
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 {
 UDIVSI ([&](){ valid = 0; return 0; }(), [&](){ valid = 0; return 0; }());
 UMODSI ([&](){ valid = 0; return 0; }(), [&](){ valid = 0; return 0; }());
@@ -2274,7 +2274,7 @@ mep_emu_dret (const insn_t &insn)
 
 {
 ANDSI ([&](){ valid = 0; return 0; }(), INVSI (SLLSI (1, 15)));
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 
   return 2;
@@ -2539,7 +2539,7 @@ mep_emu_swcp (const insn_t &insn)
   int valid = 1;
 
 {
-{ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 2;
@@ -2554,7 +2554,7 @@ mep_emu_lwcp (const insn_t &insn)
   int valid = 1;
 
 {
-[&](){ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+[&](){ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 ;
 }
 
@@ -2599,7 +2599,7 @@ mep_emu_swcpi (const insn_t &insn)
   int valid = 1;
 
 {
-{ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 ADDSI ([&](){ valid = 0; return 0; }(), 4);
 }
 
@@ -2615,7 +2615,7 @@ mep_emu_lwcpi (const insn_t &insn)
   int valid = 1;
 
 {
-[&](){ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+[&](){ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 ;
 ADDSI ([&](){ valid = 0; return 0; }(), 4);
 }
@@ -2663,7 +2663,7 @@ mep_emu_swcp16 (const insn_t &insn)
   int valid = 1;
 
 {
-{ SI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), INVSI (3)); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ SI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), INVSI (3)); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 }
 
   return 4;
@@ -2678,7 +2678,7 @@ mep_emu_lwcp16 (const insn_t &insn)
   int valid = 1;
 
 {
-[&](){ SI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), INVSI (3)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+[&](){ SI val = ANDSI (ADDSI ([&](){ valid = 0; return 0; }(), insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr), INVSI (3)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 ;
 }
 
@@ -2723,7 +2723,7 @@ mep_emu_sbcpa (const insn_t &insn)
   int valid = 1;
 
 {
-{ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr));
 }
 
@@ -2739,7 +2739,7 @@ mep_emu_lbcpa (const insn_t &insn)
   int valid = 1;
 
 {
-EXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr));
 }
@@ -2756,7 +2756,7 @@ mep_emu_shcpa (const insn_t &insn)
   int valid = 1;
 
 {
-{ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr));
 }
 
@@ -2772,7 +2772,7 @@ mep_emu_lhcpa (const insn_t &insn)
   int valid = 1;
 
 {
-EXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr));
 }
@@ -2789,7 +2789,7 @@ mep_emu_swcpa (const insn_t &insn)
   int valid = 1;
 
 {
-{ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr));
 }
 
@@ -2805,7 +2805,7 @@ mep_emu_lwcpa (const insn_t &insn)
   int valid = 1;
 
 {
-[&](){ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+[&](){ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 ;
 ADDSI ([&](){ valid = 0; return 0; }(), EXTSISI (insn.Op3.type == o_imm ? insn.Op3.value : insn.Op3.addr));
 }
@@ -2853,7 +2853,7 @@ mep_emu_sbcpm0 (const insn_t &insn)
   int valid = 1;
 
 {
-{ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
   tmp_temp = ORSI ([&](){ valid = 0; return 0; }(), [&](){ valid = 0; return 0; }());
@@ -2873,7 +2873,7 @@ mep_emu_lbcpm0 (const insn_t &insn)
   int valid = 1;
 
 {
-EXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
@@ -2894,7 +2894,7 @@ mep_emu_shcpm0 (const insn_t &insn)
   int valid = 1;
 
 {
-{ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
   tmp_temp = ORSI ([&](){ valid = 0; return 0; }(), [&](){ valid = 0; return 0; }());
@@ -2914,7 +2914,7 @@ mep_emu_lhcpm0 (const insn_t &insn)
   int valid = 1;
 
 {
-EXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
@@ -2935,7 +2935,7 @@ mep_emu_swcpm0 (const insn_t &insn)
   int valid = 1;
 
 {
-{ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
   tmp_temp = ORSI ([&](){ valid = 0; return 0; }(), [&](){ valid = 0; return 0; }());
@@ -2955,7 +2955,7 @@ mep_emu_lwcpm0 (const insn_t &insn)
   int valid = 1;
 
 {
-[&](){ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+[&](){ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 ;
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
@@ -3015,7 +3015,7 @@ mep_emu_sbcpm1 (const insn_t &insn)
   int valid = 1;
 
 {
-{ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
   tmp_temp = ORSI ([&](){ valid = 0; return 0; }(), [&](){ valid = 0; return 0; }());
@@ -3035,7 +3035,7 @@ mep_emu_lbcpm1 (const insn_t &insn)
   int valid = 1;
 
 {
-EXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTQISI ([&](){ QI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
@@ -3056,7 +3056,7 @@ mep_emu_shcpm1 (const insn_t &insn)
   int valid = 1;
 
 {
-{ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
   tmp_temp = ORSI ([&](){ valid = 0; return 0; }(), [&](){ valid = 0; return 0; }());
@@ -3076,7 +3076,7 @@ mep_emu_lhcpm1 (const insn_t &insn)
   int valid = 1;
 
 {
-EXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTHISI ([&](){ HI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (1)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
@@ -3097,7 +3097,7 @@ mep_emu_swcpm1 (const insn_t &insn)
   int valid = 1;
 
 {
-{ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, 0, val, dr_W); }
+{ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, val, 0, dr_W); }
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
   tmp_temp = ORSI ([&](){ valid = 0; return 0; }(), [&](){ valid = 0; return 0; }());
@@ -3117,7 +3117,7 @@ mep_emu_lwcpm1 (const insn_t &insn)
   int valid = 1;
 
 {
-EXTSISI ([&](){ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, 0, val, dr_R); return 0; }()
+EXTSISI ([&](){ SI val = ANDSI ([&](){ valid = 0; return 0; }(), INVSI (3)); if (valid) insn_add_dref(insn, val, 0, dr_R); return 0; }()
 );
 [&](){   SI tmp_modulo_mask;
   tmp_modulo_mask = [&](){   SI tmp_temp;
@@ -3178,7 +3178,7 @@ mep_emu_bcpeq (const insn_t &insn)
 
 {
 {
-{ USI val = ((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 }
 
@@ -3195,7 +3195,7 @@ mep_emu_bcpne (const insn_t &insn)
 
 {
 {
-{ USI val = ((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 }
 
@@ -3212,7 +3212,7 @@ mep_emu_bcpat (const insn_t &insn)
 
 {
 {
-{ USI val = ((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 }
 
@@ -3229,7 +3229,7 @@ mep_emu_bcpaf (const insn_t &insn)
 
 {
 {
-{ USI val = ((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op2.type == o_imm ? insn.Op2.value : insn.Op2.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 }
 
@@ -3263,19 +3263,19 @@ mep_emu_jsrv (const insn_t &insn)
 {
 {
 ORSI (ADDSI (pc, 8), 1);
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((0) << (12)))));
 }
 {
 ORSI (ADDSI (pc, 4), 1);
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (1))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((0) << (12)))));
 }
 {
 ORSI (ADDSI (pc, 2), 1);
 {
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
-{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (3))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ANDSI ([&](){ valid = 0; return 0; }(), (~ (7))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((1) << (12)))));
 }
@@ -3297,19 +3297,19 @@ mep_emu_bsrv (const insn_t &insn)
 {
 {
 ORSI (ADDSI (pc, 8), 1);
-{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((0) << (12)))));
 }
 {
 ORSI (ADDSI (pc, 4), 1);
-{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (1)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((0) << (12)))));
 }
 {
 ORSI (ADDSI (pc, 4), 1);
 {
-{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (3)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
-{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (7)))); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (3)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = ((insn.Op1.type == o_imm ? insn.Op1.value : insn.Op1.addr) & ((~ (7)))); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 }
 ORSI (ANDSI ([&](){ valid = 0; return 0; }(), (~ (((1) << (12))))), ((((1) << (12))) & (((1) << (12)))));
 }
@@ -3351,7 +3351,7 @@ mep_emu_ri_0 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3364,7 +3364,7 @@ mep_emu_ri_1 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3377,7 +3377,7 @@ mep_emu_ri_2 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3390,7 +3390,7 @@ mep_emu_ri_3 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3403,7 +3403,7 @@ mep_emu_ri_4 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3416,7 +3416,7 @@ mep_emu_ri_5 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3429,7 +3429,7 @@ mep_emu_ri_6 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3442,7 +3442,7 @@ mep_emu_ri_7 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3455,7 +3455,7 @@ mep_emu_ri_8 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3468,7 +3468,7 @@ mep_emu_ri_9 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3481,7 +3481,7 @@ mep_emu_ri_10 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3494,7 +3494,7 @@ mep_emu_ri_11 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3507,7 +3507,7 @@ mep_emu_ri_12 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3520,7 +3520,7 @@ mep_emu_ri_13 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3533,7 +3533,7 @@ mep_emu_ri_14 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3546,7 +3546,7 @@ mep_emu_ri_15 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3559,7 +3559,7 @@ mep_emu_ri_17 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3572,7 +3572,7 @@ mep_emu_ri_20 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3585,7 +3585,7 @@ mep_emu_ri_21 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3598,7 +3598,7 @@ mep_emu_ri_22 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3611,7 +3611,7 @@ mep_emu_ri_23 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3624,7 +3624,7 @@ mep_emu_ri_26 (const insn_t &insn)
   ea_t pc = insn.ea;
   int valid = 1;
 
-{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, 0, val, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
+{ USI val = [&](){ valid = 0; return 0; }(); if (valid) insn_add_cref(insn, val, 0, has_insn_feature(insn.itype, CF_CALL) ? fl_CN : fl_JN); }
 
   return 2;
 }
@@ -3864,7 +3864,7 @@ int idaapi mep_emu(const insn_t &insn)
   }
   if (len && !has_insn_feature(insn.itype, CF_STOP))
   {
-    insn_add_cref(insn, 0, insn.ea+len, fl_F);
+    insn_add_cref(insn, insn.ea+len, 0, fl_F);
   } else if (may_trace_sp()) {
     recalc_spd(insn.ea);
   }
