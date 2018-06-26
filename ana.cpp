@@ -91,8 +91,7 @@ static inline ea_t calc_reference_target(ea_t from, const refinfo_t &ri, adiff_t
   ea_t target;
   ea_t base;
   calc_reference_data(&target, &base, from, ri, opval);
-  (void)base;
-  return target;
+  return base+target;
 }
 
 /* Analyze the current instruction.  */

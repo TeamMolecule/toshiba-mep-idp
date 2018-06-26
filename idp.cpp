@@ -162,6 +162,7 @@ processor_t LPH =
   PLFM_MEP,               // id
                           // flag
   PR_USE32
+  |PR_DEFSEG32
   |PRN_HEX
   |PR_WORD_INS
   |PR_RNAMESOK          // can use register names for byte names
